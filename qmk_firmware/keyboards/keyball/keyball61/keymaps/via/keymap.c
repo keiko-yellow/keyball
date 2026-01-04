@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include QMK_KEYBOARD_H
-#include "keyball/keyball.h"
+#include "keyboards/keyball/lib/keyball/keyball.h"
 #include <stdbool.h>
 
 // clang-format off
