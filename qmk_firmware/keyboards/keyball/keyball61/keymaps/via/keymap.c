@@ -61,7 +61,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ////////////////////////////
 
 enum custom_keycodes {
-    KC_MY_BTN1 = SAFE_RANGE,
+    KC_MY_BTN1 = KEYBALL_SAFE_RANGE,
     KC_MY_BTN2,
     KC_MY_BTN3,
     KC_MY_BTN4,
