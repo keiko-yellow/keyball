@@ -23,12 +23,12 @@ jobs:
 
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/qmk/qmk_cli@sha256:2dc05fc9f32efebd6b05c2b8676ee548358bc7e151e9dbf4dac6b6eed4513b07
+      image: ghcr.io/qmk/qmk_cli:latest
 
     steps:
 
     - name: Checkout source
-      uses: actions/checkout@v6
+      uses: actions/checkout@v4
 
     - name: Checkout qmk_firmware
       uses: ./.github/actions/checkout-qmk_firmware
@@ -37,21 +37,13 @@ jobs:
       run: ln -s $(pwd)/qmk_firmware/keyboards/keyball __qmk__/keyboards/keyball
 
     - name: Install missing python modules
-      - uses: actions/setup-python@v5
-  with:
-    python-version: "3.12"
-
-- name: Install QMK python deps
-  run: |
-    python -m pip install --upgrade pip
-    python -m pip install -r __qmk__/requirements.txt
-
+      run: /usr/bin/python3 -m pip install -r __qmk__/requirements.txt
 
     - name: Compile and link
       run: qmk compile -j 4 -kb keyball/${{ inputs.keyboard }} -km ${{ inputs.keymap }}
 
     - name: Archive built firmware
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.keyboard }}-${{ inputs.keymap }}-firmware
         path: __qmk__/*.hex
