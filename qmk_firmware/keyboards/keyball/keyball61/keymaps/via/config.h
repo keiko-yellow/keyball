@@ -38,4 +38,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define POINTING_DEVICE_AUTO_MOUSE_ENABLE
 #define AUTO_MOUSE_DEFAULT_LAYER 4
 #define COMBO_COUNT 23
-#define COMBO_TERM 100 // 50から100に増やして反応を見る
+#define COMBO_TERM 50 // 同時押し判定時間　長くすると文字入力時に支障。可能な限り短く
