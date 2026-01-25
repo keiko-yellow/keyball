@@ -709,15 +709,14 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
         keycode &= 0xff;
     }
 
+#if 0
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
-    /*
     // reduce auto mouse timeout if mouse key is pressed.
     if (is_mouse_record_kb(keycode, record) || IS_MOUSEKEY(keycode)) {
         set_auto_mouse_timeout(keyball_get_auto_mouse_timeout());
     }
-    /*
 #endif
-
+#endif
 
     switch (keycode) {
 #ifndef MOUSEKEY_ENABLE
