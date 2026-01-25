@@ -70,6 +70,8 @@ void oledkit_render_info_user(void) {
 }
 #endif
 
+#ifdef COMBO_ENABLE
+
 enum combos{
 
 TQ_QUES,
