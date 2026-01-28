@@ -100,6 +100,7 @@ NS_BTN2,
 WR_BTN4,
 RY_BTN5,
 TS_BTN3
+BTN1BTN2_BTN3,
 
 };
 
@@ -126,6 +127,7 @@ const uint16_t PROGMEM my_ns[] = {KC_N, KC_S, COMBO_END};
 const uint16_t PROGMEM my_wr[] = {KC_W, KC_R, COMBO_END};
 const uint16_t PROGMEM my_ry[] = {KC_R, KC_Y, COMBO_END};
 const uint16_t PROGMEM my_ts[] = {KC_T, KC_S, COMBO_END};
+const uint16_t PROGMEM my_BTN1BTN2[] = {KC_BTN1, KC_BTN2, COMBO_END};
 
 combo_t key_combos[] = {
 
@@ -174,6 +176,8 @@ combo_t key_combos[] = {
 [RY_BTN5] = COMBO(my_ry, KC_BTN5),
 
 [TS_BTN3] = COMBO(my_ts, KC_BTN3),
+
+[TS_BTN3] = COMBO(my_BTN1BTN2, KC_BTN3),
 
 };
 
