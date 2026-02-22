@@ -78,21 +78,25 @@ void oledkit_render_info_user(void) {
 enum combos{
 
 TQ_QUES,
-VD_ENTER,
+DV_ENT,
+RY_BSPC,
+MJ_DEL,
 BTN1_BTN2_TO_BTN3, 
 
 };
 
 const uint16_t PROGMEM my_tq[] = {KC_T, KC_Q, COMBO_END};
-const uint16_t PROGMEM my_VD[] = {KC_V, KC_D, COMBO_END};
+const uint16_t PROGMEM my_dv[] = {KC_D, KC_V, COMBO_END};
+const uint16_t PROGMEM my_ry[] = {KC_R, KC_Y, COMBO_END};
+const uint16_t PROGMEM my_mj[] = {KC_M, KC_J, COMBO_END};
 const uint16_t PROGMEM btn3_combo[] = { KC_BTN1, KC_BTN2, COMBO_END };
 
 combo_t key_combos[] = {
 
 [TQ_QUES] = COMBO(my_tq, KC_QUES), 
-
-[VD_ENTER] = COMBO(my_VD, KC_ENTER), 
-
+[DV_ENT]  = COMBO(my_dv,  KC_ENT),
+[RY_BSPC] = COMBO(my_ry, KC_BSPC),
+[MJ_DEL]  = COMBO(my_mj,  KC_DEL),
 [BTN1_BTN2_TO_BTN3] = COMBO(btn3_combo, KC_BTN3),
 
 };
