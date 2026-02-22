@@ -91,7 +91,7 @@ combo_t key_combos[] = {
 
 [TQ_QUES] = COMBO(my_tq, KC_QUES), 
 
-[VD_QUES] = COMBO(my_VD, KC_ENTER), 
+[VD_ENTER] = COMBO(my_VD, KC_ENTER), 
 
 [BTN1_BTN2_TO_BTN3] = COMBO(btn3_combo, KC_BTN3),
 
