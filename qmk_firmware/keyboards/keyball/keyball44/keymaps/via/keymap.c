@@ -84,6 +84,7 @@ RY_DEL,
 BTN1_BTN2_TO_BTN3,
 LU_ESC,
 XC_TAB,
+SPC_SFT_ENT,
 
 };
 
@@ -94,6 +95,7 @@ const uint16_t PROGMEM my_ry[] = {KC_R, KC_Y, COMBO_END};
 const uint16_t PROGMEM btn3_combo[] = { KC_BTN1, KC_BTN2, COMBO_END };
 const uint16_t PROGMEM my_lu[] = {KC_L, KC_U, COMBO_END};
 const uint16_t PROGMEM my_xc[] = {KC_X, KC_C, COMBO_END};
+const uint16_t PROGMEM spc_sft_combo[] = {KC_SPC, KC_LSFT, COMBO_END};
 
 combo_t key_combos[] = {
 
@@ -104,6 +106,7 @@ combo_t key_combos[] = {
 [BTN1_BTN2_TO_BTN3] = COMBO(btn3_combo, KC_BTN3),
 [LU_ESC] = COMBO(my_lu, KC_ESC),
 [XC_TAB] = COMBO(my_xc, KC_TAB),
+[SPC_SFT_ENT] = COMBO(spc_sft_combo, KC_ENT),
 
 };
 
