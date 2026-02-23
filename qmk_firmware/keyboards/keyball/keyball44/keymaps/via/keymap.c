@@ -79,25 +79,31 @@ enum combos{
 
 TQ_QUES,
 DV_ENT,
-RY_BSPC,
-MJ_DEL,
-BTN1_BTN2_TO_BTN3, 
+MJ_BSPC,
+RY_DEL,
+BTN1_BTN2_TO_BTN3,
+LU_ESC,
+XC_TAB,
 
 };
 
 const uint16_t PROGMEM my_tq[] = {KC_T, KC_Q, COMBO_END};
 const uint16_t PROGMEM my_dv[] = {KC_D, KC_V, COMBO_END};
-const uint16_t PROGMEM my_ry[] = {KC_R, KC_Y, COMBO_END};
 const uint16_t PROGMEM my_mj[] = {KC_M, KC_J, COMBO_END};
+const uint16_t PROGMEM my_ry[] = {KC_R, KC_Y, COMBO_END};
 const uint16_t PROGMEM btn3_combo[] = { KC_BTN1, KC_BTN2, COMBO_END };
+const uint16_t PROGMEM my_lu[] = {KC_L, KC_U, COMBO_END};
+const uint16_t PROGMEM my_xc[] = {KC_X, KC_C, COMBO_END};
 
 combo_t key_combos[] = {
 
 [TQ_QUES] = COMBO(my_tq, KC_QUES), 
 [DV_ENT]  = COMBO(my_dv,  KC_ENT),
-[RY_BSPC] = COMBO(my_ry, KC_BSPC),
-[MJ_DEL]  = COMBO(my_mj,  KC_DEL),
+[MJ_BSPC] = COMBO(my_mj, KC_BSPC),
+[RY_DEL]  = COMBO(my_ry,  KC_DEL),
 [BTN1_BTN2_TO_BTN3] = COMBO(btn3_combo, KC_BTN3),
+[LU_ESC] = COMBO(my_lu, KC_ESC),
+[XC_TAB] = COMBO(my_xc, KC_TAB),
 
 };
 
