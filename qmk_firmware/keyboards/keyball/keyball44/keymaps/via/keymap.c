@@ -95,7 +95,7 @@ const uint16_t PROGMEM my_ry[] = {KC_R, KC_Y, COMBO_END};
 const uint16_t PROGMEM my_lu[] = {KC_L, KC_U, COMBO_END};
 const uint16_t PROGMEM my_xc[] = {KC_X, KC_C, COMBO_END};
 const uint16_t PROGMEM btn3_combo[] = { KC_BTN1, KC_BTN2, COMBO_END };
-const uint16_t PROGMEM spc_sft_combo[] = {KC_SPC, KC_LSFT, COMBO_END};
+const uint16_t PROGMEM spc_sft_combo[] = {LT(1, KC_SPC), KC_LSFT, COMBO_END};
 
 combo_t key_combos[] = {
 
