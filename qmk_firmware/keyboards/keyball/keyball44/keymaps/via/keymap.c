@@ -85,6 +85,15 @@ LU_ESC,
 XC_TAB,
 BTN1_BTN2_TO_BTN3,
 SPC_SFT_ENT,
+LU_UP,
+XC_DOWN,
+IA_LEFT,
+AO_RIGHT,
+TN_BTN1,
+NS_BTN2,
+WR_BTN4,
+RY_BTN5,
+TS_BTN3
 
 };
 
@@ -96,6 +105,15 @@ const uint16_t PROGMEM my_lu[] = {KC_L, KC_U, COMBO_END};
 const uint16_t PROGMEM my_xc[] = {KC_X, KC_C, COMBO_END};
 const uint16_t PROGMEM btn3_combo[] = { KC_BTN1, KC_BTN2, COMBO_END };
 const uint16_t PROGMEM spc_sft_combo[] = {LT(1, KC_SPC), KC_LSFT, COMBO_END};
+const uint16_t PROGMEM my_lu[] = {KC_L, KC_U, COMBO_END};
+const uint16_t PROGMEM my_xc[] = {KC_X, KC_C, COMBO_END};
+const uint16_t PROGMEM my_ia[] = {KC_I, KC_A, COMBO_END};
+const uint16_t PROGMEM my_ao[] = {KC_A, KC_O, COMBO_END};
+const uint16_t PROGMEM my_tn[] = {KC_T, KC_N, COMBO_END};
+const uint16_t PROGMEM my_ns[] = {KC_N, KC_S, COMBO_END};
+const uint16_t PROGMEM my_wr[] = {KC_W, KC_R, COMBO_END};
+const uint16_t PROGMEM my_ry[] = {KC_R, KC_Y, COMBO_END};
+const uint16_t PROGMEM my_ts[] = {KC_T, KC_S, COMBO_END};
 
 combo_t key_combos[] = {
 
@@ -107,6 +125,15 @@ combo_t key_combos[] = {
 [XC_TAB] = COMBO(my_xc, KC_TAB),
 [BTN1_BTN2_TO_BTN3] = COMBO(btn3_combo, KC_BTN3),
 [SPC_SFT_ENT] = COMBO(spc_sft_combo, KC_ENT),
+[LU_UP] = COMBO(my_lu, KC_UP),
+[XC_DOWN] = COMBO(my_xc, KC_DOWN),
+[IA_LEFT] = COMBO(my_ia, KC_LEFT),
+[AO_RIGHT] = COMBO(my_ao, KC_RIGHT),
+[TN_BTN1] = COMBO(my_tn, KC_BTN1),
+[NS_BTN2] = COMBO(my_ns, KC_BTN2),
+[WR_BTN4] = COMBO(my_wr, KC_BTN4),
+[RY_BTN5] = COMBO(my_ry, KC_BTN5),
+[TS_BTN3] = COMBO(my_ts, KC_BTN3),
 
 };
 
