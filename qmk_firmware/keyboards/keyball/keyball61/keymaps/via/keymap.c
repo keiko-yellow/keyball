@@ -22,19 +22,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /*
  * レイヤー0の長押しキー定義
  *
- * E : 単打 E / 長押し Ctrl
- * I : 単打 I / 長押し Alt
- * S : 単打 S / 長押し Alt
- * H : 単打 H / 長押し Ctrl
- * Z : 単打 Z / 長押し Win/Cmd
- * B : 単打 B / 長押し Win/Cmd
+ * 左手側
+ * E : 単打 E / 長押し 左Ctrl
+ * I : 単打 I / 長押し 左Alt
+ * Z : 単打 Z / 長押し 左Win-Cmd
+ *
+ * 右手側
+ * S : 単打 S / 長押し 右Alt
+ * H : 単打 H / 長押し 右Ctrl
+ * B : 単打 B / 長押し 右Win-Cmd
  */
 #define E_CTL LCTL_T(KC_E)
 #define I_ALT LALT_T(KC_I)
-#define S_ALT LALT_T(KC_S)
-#define H_CTL LCTL_T(KC_H)
 #define Z_GUI LGUI_T(KC_Z)
-#define B_GUI LGUI_T(KC_B)
+
+#define S_ALT RALT_T(KC_S)
+#define H_CTL RCTL_T(KC_H)
+#define B_GUI RGUI_T(KC_B)
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -118,7 +122,7 @@ const uint16_t PROGMEM my_lu[] = {KC_L, KC_U, COMBO_END};
 const uint16_t PROGMEM my_xc[] = {KC_X, KC_C, COMBO_END};
 
 /*
- * I は単打I / 長押しAlt なので I_ALT
+ * I は単打I / 長押し左Alt なので I_ALT
  */
 const uint16_t PROGMEM my_ia[] = {I_ALT, KC_A, COMBO_END};
 
@@ -127,7 +131,7 @@ const uint16_t PROGMEM my_ao[] = {KC_A, KC_O, COMBO_END};
 const uint16_t PROGMEM my_tn[] = {KC_T, KC_N, COMBO_END};
 
 /*
- * S は単打S / 長押しAlt なので S_ALT
+ * S は単打S / 長押し右Alt なので S_ALT
  */
 const uint16_t PROGMEM my_ns[] = {KC_N, S_ALT, COMBO_END};
 
@@ -135,7 +139,7 @@ const uint16_t PROGMEM my_wr[] = {KC_W, KC_R, COMBO_END};
 const uint16_t PROGMEM my_ry[] = {KC_R, KC_Y, COMBO_END};
 
 /*
- * S は単打S / 長押しAlt なので S_ALT
+ * S は単打S / 長押し右Alt なので S_ALT
  */
 const uint16_t PROGMEM my_ts[] = {KC_T, S_ALT, COMBO_END};
 
@@ -144,9 +148,13 @@ const uint16_t PROGMEM my_ts[] = {KC_T, S_ALT, COMBO_END};
  * S + H -> Delete
  * E + I -> Escape
  *
- * S/H/E/I は長押しキーなので、
- * KC_S/KC_H/KC_E/KC_I ではなく、
- * S_ALT/H_CTL/E_CTL/I_ALT を使う。
+ * S/H は右手側の長押しキーなので、
+ * S_ALT = RALT_T(KC_S)
+ * H_CTL = RCTL_T(KC_H)
+ *
+ * E/I は左手側の長押しキーなので、
+ * E_CTL = LCTL_T(KC_E)
+ * I_ALT = LALT_T(KC_I)
  */
 const uint16_t PROGMEM my_sh[] = {S_ALT, H_CTL, COMBO_END};
 const uint16_t PROGMEM my_ei[] = {E_CTL, I_ALT, COMBO_END};
