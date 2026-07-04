@@ -123,7 +123,11 @@ const uint16_t PROGMEM my_oy[] = {KC_O, KC_Y, COMBO_END};
 const uint16_t PROGMEM my_ok[] = {KC_O, KC_K, COMBO_END};
 const uint16_t PROGMEM my_lu[] = {KC_L, KC_U, COMBO_END};
 const uint16_t PROGMEM my_xc[] = {KC_X, KC_C, COMBO_END};
-const uint16_t PROGMEM my_ia[] = {KC_I, KC_A, COMBO_END};
+/*
+ * Iキーが「単打 I / 長押し Alt」のMod-Tapなので、
+ * KC_I ではなく I_ALT をCombo定義に使う。
+ */
+const uint16_t PROGMEM my_ia[] = {I_ALT, KC_A, COMBO_END};
 const uint16_t PROGMEM my_ao[] = {KC_A, KC_O, COMBO_END};
 const uint16_t PROGMEM my_tn[] = {KC_T, KC_N, COMBO_END};
 const uint16_t PROGMEM my_ns[] = {KC_N, KC_S, COMBO_END};
