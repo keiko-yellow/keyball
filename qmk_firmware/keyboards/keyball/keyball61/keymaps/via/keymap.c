@@ -17,16 +17,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include QMK_KEYBOARD_H
-
 #include "quantum.h"
+
+/*
+ * レイヤー0の長押しキー定義
+ *
+ * E : 単打 E / 長押し Ctrl
+ * I : 単打 I / 長押し Alt
+ * S : 単打 S / 長押し Alt
+ * H : 単打 H / 長押し Ctrl
+ * Z : 単打 Z / 長押し Win/Cmd
+ * B : 単打 B / 長押し Win/Cmd
+ */
+#define E_CTL LCTL_T(KC_E)
+#define I_ALT LALT_T(KC_I)
+#define S_ALT LALT_T(KC_S)
+#define H_CTL LCTL_T(KC_H)
+#define Z_GUI LGUI_T(KC_Z)
+#define B_GUI LGUI_T(KC_B)
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_universal(
     KC_ESC   , KC_1     , KC_2     , KC_3     , KC_4     , KC_5     ,                                  KC_6     , KC_7     , KC_8     , KC_9     , KC_0     , KC_MINS  ,
-    KC_DEL   , KC_Q     , KC_W     , KC_E     , KC_R     , KC_T     ,                                  KC_Y     , KC_U     , KC_I     , KC_O     , KC_P     , KC_INT3  ,
-    KC_TAB   , KC_A     , KC_S     , KC_D     , KC_F     , KC_G     ,                                  KC_H     , KC_J     , KC_K     , KC_L     , KC_SCLN  , S(KC_7)  ,
-    MO(1)    , KC_Z     , KC_X     , KC_C     , KC_V     , KC_B     , KC_RBRC  ,              KC_NUHS, KC_N     , KC_M     , KC_COMM  , KC_DOT   , KC_SLSH  , KC_RSFT  ,
+    KC_DEL   , KC_Q     , KC_W     , E_CTL    , KC_R     , KC_T     ,                                  KC_Y     , KC_U     , I_ALT    , KC_O     , KC_P     , KC_INT3  ,
+    KC_TAB   , KC_A     , S_ALT    , KC_D     , KC_F     , KC_G     ,                                  H_CTL    , KC_J     , KC_K     , KC_L     , KC_SCLN  , S(KC_7)  ,
+    MO(1)    , Z_GUI    , KC_X     , KC_C     , KC_V     , B_GUI    , KC_RBRC  ,              KC_NUHS, KC_N     , KC_M     , KC_COMM  , KC_DOT   , KC_SLSH  , KC_RSFT  ,
     _______  , KC_LCTL  , KC_LALT  , KC_LGUI,LT(1,KC_LNG2),LT(2,KC_SPC),LT(3,KC_LNG1),    KC_BSPC,LT(2,KC_ENT),LT(1,KC_LNG2),KC_RGUI, _______ , KC_RALT  , KC_PSCR
   ),
 
@@ -78,93 +94,66 @@ void oledkit_render_info_user(void) {
 
 #ifdef COMBO_ENABLE
 
-enum combos{
+enum combos {
 
-TQ_QUES,
-OS_SING,
-OW_DOUB,
-OB_BOU,
-OP_PER,
-OD_DOL,
-TU_UNDER,
-TA_AND,
-OH_HUSH,
-TE_EXCL,
-ON_NAMI,
-OT_TASU,
-OY_YAMA,
-OK_KAKE,
 LU_UP,
 XC_DOWN,
 IA_LEFT,
 AO_RIGHT,
+
 TN_BTN1,
 NS_BTN2,
 WR_BTN4,
 RY_BTN5,
 TS_BTN3,
-BTN1_BTN2_TO_BTN3, 
+
+SH_DEL,
+EI_ESC,
+
+BTN1_BTN2_TO_BTN3,
 
 };
 
-const uint16_t PROGMEM my_tq[] = {KC_T, KC_Q, COMBO_END};
-const uint16_t PROGMEM my_os[] = {KC_O, KC_S, COMBO_END};
-const uint16_t PROGMEM my_ow[] = {KC_O, KC_W, COMBO_END};
-const uint16_t PROGMEM my_ob[] = {KC_O, KC_B, COMBO_END};
-const uint16_t PROGMEM my_op[] = {KC_O, KC_P, COMBO_END};
-const uint16_t PROGMEM my_od[] = {KC_O, KC_D, COMBO_END};
-const uint16_t PROGMEM my_tu[] = {KC_T, KC_U, COMBO_END};
-const uint16_t PROGMEM my_ta[] = {KC_T, KC_A, COMBO_END};
-const uint16_t PROGMEM my_oh[] = {KC_O, KC_H, COMBO_END};
-const uint16_t PROGMEM my_te[] = {KC_T, KC_E, COMBO_END};
-const uint16_t PROGMEM my_on[] = {KC_O, KC_N, COMBO_END};
-const uint16_t PROGMEM my_ot[] = {KC_O, KC_T, COMBO_END};
-const uint16_t PROGMEM my_oy[] = {KC_O, KC_Y, COMBO_END};
-const uint16_t PROGMEM my_ok[] = {KC_O, KC_K, COMBO_END};
 const uint16_t PROGMEM my_lu[] = {KC_L, KC_U, COMBO_END};
 const uint16_t PROGMEM my_xc[] = {KC_X, KC_C, COMBO_END};
+
 /*
- * Iキーが「単打 I / 長押し Alt」のMod-Tapなので、
- * KC_I ではなく I_ALT をCombo定義に使う。
+ * I は単打I / 長押しAlt なので I_ALT
  */
 const uint16_t PROGMEM my_ia[] = {I_ALT, KC_A, COMBO_END};
+
 const uint16_t PROGMEM my_ao[] = {KC_A, KC_O, COMBO_END};
+
 const uint16_t PROGMEM my_tn[] = {KC_T, KC_N, COMBO_END};
-const uint16_t PROGMEM my_ns[] = {KC_N, KC_S, COMBO_END};
+
+/*
+ * S は単打S / 長押しAlt なので S_ALT
+ */
+const uint16_t PROGMEM my_ns[] = {KC_N, S_ALT, COMBO_END};
+
 const uint16_t PROGMEM my_wr[] = {KC_W, KC_R, COMBO_END};
 const uint16_t PROGMEM my_ry[] = {KC_R, KC_Y, COMBO_END};
-const uint16_t PROGMEM my_ts[] = {KC_T, KC_S, COMBO_END};
-const uint16_t PROGMEM btn3_combo[] = { KC_BTN1, KC_BTN2, COMBO_END };
+
+/*
+ * S は単打S / 長押しAlt なので S_ALT
+ */
+const uint16_t PROGMEM my_ts[] = {KC_T, S_ALT, COMBO_END};
+
+/*
+ * 追加Combo
+ * S + H -> Delete
+ * E + I -> Escape
+ *
+ * S/H/E/I は長押しキーなので、
+ * KC_S/KC_H/KC_E/KC_I ではなく、
+ * S_ALT/H_CTL/E_CTL/I_ALT を使う。
+ */
+const uint16_t PROGMEM my_sh[] = {S_ALT, H_CTL, COMBO_END};
+const uint16_t PROGMEM my_ei[] = {E_CTL, I_ALT, COMBO_END};
+
+const uint16_t PROGMEM btn3_combo[] = {KC_BTN1, KC_BTN2, COMBO_END};
 
 combo_t key_combos[] = {
-
-[TQ_QUES] = COMBO(my_tq, KC_QUES),
-
-[OS_SING] = COMBO(my_os, KC_QUOT),
-
-[OW_DOUB] = COMBO(my_ow, KC_DQUO),
-
-[OB_BOU] = COMBO(my_ob, KC_PIPE),
-
-[OP_PER] = COMBO(my_op, KC_PERC),
-
-[OD_DOL] = COMBO(my_od, KC_DLR),
-
-[TU_UNDER] = COMBO(my_tu, LSFT(KC_MINS)),
-
-[TA_AND] = COMBO(my_ta, KC_AMPR),
-
-[OH_HUSH] = COMBO(my_oh, KC_HASH),
-
-[TE_EXCL] = COMBO(my_te, KC_EXLM),
-
-[ON_NAMI] = COMBO(my_on, KC_TILD),
-
-[OT_TASU] = COMBO(my_ot, KC_PLUS),
-
-[OY_YAMA] = COMBO(my_oy, KC_CIRC),
-
-[OK_KAKE] = COMBO(my_ok, LSFT(KC_8)),
 
 [LU_UP] = COMBO(my_lu, KC_UP),
 
@@ -184,9 +173,12 @@ combo_t key_combos[] = {
 
 [TS_BTN3] = COMBO(my_ts, KC_BTN3),
 
+[SH_DEL] = COMBO(my_sh, KC_DEL),
+
+[EI_ESC] = COMBO(my_ei, KC_ESC),
+
 [BTN1_BTN2_TO_BTN3] = COMBO(btn3_combo, KC_BTN3),
 
 };
-
 
 #endif
