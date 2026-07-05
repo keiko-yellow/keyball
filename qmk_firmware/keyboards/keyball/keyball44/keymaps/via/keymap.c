@@ -94,10 +94,10 @@ void oledkit_render_info_user(void) {
 
 #ifdef COMBO_ENABLE
 
-#define CURRENT_COMBO_COUNT 17
+#define CURRENT_COMBO_COUNT 19
 
 #if COMBO_COUNT != CURRENT_COMBO_COUNT
-#    error "Set COMBO_COUNT to 17 in config.h"
+#    error "Set COMBO_COUNT to 19 in config.h"
 #endif
 
 enum combos {
@@ -108,7 +108,11 @@ IA_LEFT,
 AO_RIGHT,
 
 TN_CTRL_BSPC,
-NS_DEL,
+
+NS_DEL_RALT,
+NS_DEL_LALT,
+NS_DEL_PLAIN,
+
 WR_BTN4,
 RY_BTN5,
 TS_ESC,
@@ -125,6 +129,8 @@ BTN1_BTN2_TO_BTN3,
 
 };
 
+#define S_LALT LALT_T(KC_S)
+
 const uint16_t PROGMEM my_lu[] = {KC_L, KC_U, COMBO_END};
 const uint16_t PROGMEM my_xc[] = {KC_X, KC_C, COMBO_END};
 
@@ -132,7 +138,14 @@ const uint16_t PROGMEM my_ia[] = {I_ALT, KC_A, COMBO_END};
 const uint16_t PROGMEM my_ao[] = {KC_A, KC_O, COMBO_END};
 
 const uint16_t PROGMEM my_tn[] = {KC_T, KC_N, COMBO_END};
-const uint16_t PROGMEM my_ns[] = {KC_N, S_ALT, COMBO_END};
+
+/*
+ * N + S → Delete
+ * Sキーが RALT_T / LALT_T / KC_S のどれで保存されていても拾う
+ */
+const uint16_t PROGMEM my_ns_ralt[]  = {KC_N, S_ALT,  COMBO_END};
+const uint16_t PROGMEM my_ns_lalt[]  = {KC_N, S_LALT, COMBO_END};
+const uint16_t PROGMEM my_ns_plain[] = {KC_N, KC_S,   COMBO_END};
 
 const uint16_t PROGMEM my_wr[] = {KC_W, KC_R, COMBO_END};
 const uint16_t PROGMEM my_ry[] = {KC_R, KC_Y, COMBO_END};
@@ -160,12 +173,16 @@ combo_t key_combos[COMBO_COUNT] = {
 [AO_RIGHT] = COMBO(my_ao, KC_RIGHT),
 
 [TN_CTRL_BSPC] = COMBO(my_tn, LCTL(KC_BSPC)),
-[NS_DEL] = COMBO(my_ns, KC_DEL),
+
+[NS_DEL_RALT]  = COMBO(my_ns_ralt,  KC_DEL),
+[NS_DEL_LALT]  = COMBO(my_ns_lalt,  KC_DEL),
+[NS_DEL_PLAIN] = COMBO(my_ns_plain, KC_DEL),
 
 [WR_BTN4] = COMBO(my_wr, KC_BTN4),
 [RY_BTN5] = COMBO(my_ry, KC_BTN5),
 
 [TS_ESC] = COMBO(my_ts, KC_ESC),
+
 [SH_CTRL_BSPC] = COMBO(my_sh, LCTL(KC_BSPC)),
 
 [EI_F10] = COMBO(my_ei, KC_F10),
