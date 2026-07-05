@@ -22,15 +22,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /*
  * レイヤー0の長押しキー定義
  *
- * 左手側
  * E : 単打 E / 長押し 左Ctrl
  * I : 単打 I / 長押し 左Alt
  * Z : 単打 Z / 長押し 左Win-Cmd
- *
- * 右手側
  * S : 単打 S / 長押し 右Alt
  * H : 単打 H / 長押し 右Ctrl
- * B : 単打 B / 長押し 右Win-Cmd
+ * B : 単打 B / 長押し 左Win-Cmd
  */
 #define E_CTL LCTL_T(KC_E)
 #define I_ALT LALT_T(KC_I)
@@ -38,7 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define S_ALT RALT_T(KC_S)
 #define H_CTL RCTL_T(KC_H)
-#define B_GUI RGUI_T(KC_B)
+#define B_GUI LGUI_T(KC_B)
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -98,6 +95,12 @@ void oledkit_render_info_user(void) {
 
 #ifdef COMBO_ENABLE
 
+#define CURRENT_COMBO_COUNT 17
+
+#if COMBO_COUNT != CURRENT_COMBO_COUNT
+#    error "Set COMBO_COUNT to 17 in config.h"
+#endif
+
 enum combos {
 
 LU_UP,
@@ -126,75 +129,30 @@ BTN1_BTN2_TO_BTN3,
 const uint16_t PROGMEM my_lu[] = {KC_L, KC_U, COMBO_END};
 const uint16_t PROGMEM my_xc[] = {KC_X, KC_C, COMBO_END};
 
-/*
- * I は単打I / 長押し左Alt なので I_ALT
- */
 const uint16_t PROGMEM my_ia[] = {I_ALT, KC_A, COMBO_END};
-
 const uint16_t PROGMEM my_ao[] = {KC_A, KC_O, COMBO_END};
 
-/*
- * T + N -> Ctrl + Backspace
- */
 const uint16_t PROGMEM my_tn[] = {KC_T, KC_N, COMBO_END};
-
-/*
- * N + S -> Delete
- * S は単打S / 長押し右Alt なので S_ALT
- */
 const uint16_t PROGMEM my_ns[] = {KC_N, S_ALT, COMBO_END};
 
 const uint16_t PROGMEM my_wr[] = {KC_W, KC_R, COMBO_END};
 const uint16_t PROGMEM my_ry[] = {KC_R, KC_Y, COMBO_END};
 
-/*
- * T + S -> Escape
- * S は単打S / 長押し右Alt なので S_ALT
- */
 const uint16_t PROGMEM my_ts[] = {KC_T, S_ALT, COMBO_END};
-
-/*
- * S + H -> Ctrl + Backspace
- */
 const uint16_t PROGMEM my_sh[] = {S_ALT, H_CTL, COMBO_END};
 
-/*
- * E + I -> F10
- * E/I は長押しキーなので E_CTL / I_ALT を使う
- */
 const uint16_t PROGMEM my_ei[] = {E_CTL, I_ALT, COMBO_END};
-
-/*
- * Z + X -> F7
- * Z は単打Z / 長押し左Win-Cmd なので Z_GUI
- */
 const uint16_t PROGMEM my_zx[] = {Z_GUI, KC_X, COMBO_END};
 
-/*
- * X + V -> Home
- */
 const uint16_t PROGMEM my_xv[] = {KC_X, KC_V, COMBO_END};
-
-/*
- * D + J -> End
- */
 const uint16_t PROGMEM my_dj[] = {KC_D, KC_J, COMBO_END};
 
-/*
- * J + B -> 半角/全角
- * B は単打B / 長押し右Win-Cmd なので B_GUI
- */
 const uint16_t PROGMEM my_jb[] = {KC_J, B_GUI, COMBO_END};
-
-/*
- * I + O -> Win + H
- * Windows音声入力を開く想定
- */
 const uint16_t PROGMEM my_io[] = {I_ALT, KC_O, COMBO_END};
 
 const uint16_t PROGMEM btn3_combo[] = {KC_BTN1, KC_BTN2, COMBO_END};
 
-combo_t key_combos[] = {
+combo_t key_combos[COMBO_COUNT] = {
 
 [LU_UP] = COMBO(my_lu, KC_UP),
 
