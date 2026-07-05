@@ -34,5 +34,5 @@ the Free Software Foundation, either version 2 of the License, or
 #define AUTO_MOUSE_LAYER_KEEP_TIME 30000
 #define AUTO_MOUSE_THRESHOLD 30
 
-#define COMBO_COUNT 19
+#define COMBO_COUNT 20
 #define COMBO_TERM 80
