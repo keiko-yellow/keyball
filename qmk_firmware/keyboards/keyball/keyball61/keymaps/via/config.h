@@ -37,6 +37,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define POINTING_DEVICE_AUTO_MOUSE_ENABLE
 #define AUTO_MOUSE_DEFAULT_LAYER 1
-#define COMBO_COUNT 24
+#define COMBO_COUNT 17
 #define COMBO_TERM 50 // 同時押し判定時間　長くすると文字入力時に支障。可能な限り短く
 #define AUTO_MOUSE_LAYER_KEEP_TIME 30000
