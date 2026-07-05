@@ -36,10 +36,3 @@ the Free Software Foundation, either version 2 of the License, or
 
 #define COMBO_COUNT 17
 #define COMBO_TERM 80
-
-/*
- * Auto Mouseでレイヤー1が有効になっても、
- * Combo判定だけはレイヤー0のキーコードを基準にする。
- * Auto Mouse自体は無効化しない。
- */
-#define COMBO_ONLY_FROM_LAYER 0
