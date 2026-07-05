@@ -19,13 +19,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include QMK_KEYBOARD_H
 #include "quantum.h"
 
+/*
+ * Keyball44 レイヤー0の長押しキー定義
+ *
+ * E : 単打 E / 長押し 左Ctrl
+ * I : 単打 I / 長押し 左Alt
+ * Z : 単打 Z / 長押し 左Win-Cmd
+ *
+ * S : 単打 S / 長押し 右Alt
+ * H : 単打 H / 長押し 右Ctrl
+ * B : 単打 B / 長押し 左Win-Cmd
+ */
+#define E_CTL LCTL_T(KC_E)
+#define I_ALT LALT_T(KC_I)
+#define Z_GUI LGUI_T(KC_Z)
+
+#define S_ALT RALT_T(KC_S)
+#define H_CTL RCTL_T(KC_H)
+#define B_GUI LGUI_T(KC_B)
+
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // keymap for default (VIA)
   [0] = LAYOUT_universal(
-    KC_ESC   , KC_Q     , KC_W     , KC_E     , KC_R     , KC_T     ,                                        KC_Y     , KC_U     , KC_I     , KC_O     , KC_P     , KC_DEL   ,
-    KC_TAB   , KC_A     , KC_S     , KC_D     , KC_F     , KC_G     ,                                        KC_H     , KC_J     , KC_K     , KC_L     , KC_SCLN  , S(KC_7)  ,
-    KC_LSFT  , KC_Z     , KC_X     , KC_C     , KC_V     , KC_B     ,                                        KC_N     , KC_M     , KC_COMM  , KC_DOT   , KC_SLSH  , KC_INT1  ,
+    KC_ESC   , KC_Q     , KC_W     , E_CTL    , KC_R     , KC_T     ,                                        KC_Y     , KC_U     , I_ALT    , KC_O     , KC_P     , KC_DEL   ,
+    KC_TAB   , KC_A     , S_ALT    , KC_D     , KC_F     , KC_G     ,                                        H_CTL    , KC_J     , KC_K     , KC_L     , KC_SCLN  , S(KC_7)  ,
+    KC_LSFT  , Z_GUI    , KC_X     , KC_C     , KC_V     , B_GUI    ,                                        KC_N     , KC_M     , KC_COMM  , KC_DOT   , KC_SLSH  , KC_INT1  ,
               KC_LALT,KC_LGUI,LCTL_T(KC_LNG2)     ,LT(1,KC_SPC),LT(3,KC_LNG1),                  KC_BSPC,LT(2,KC_ENT), RCTL_T(KC_LNG2),     KC_RALT  , KC_PSCR
   ),
 
@@ -108,26 +127,26 @@ BTN1_BTN2_TO_BTN3,
 const uint16_t PROGMEM my_lu[] = {KC_L, KC_U, COMBO_END};
 const uint16_t PROGMEM my_xc[] = {KC_X, KC_C, COMBO_END};
 
-const uint16_t PROGMEM my_ia[] = {KC_I, KC_A, COMBO_END};
+const uint16_t PROGMEM my_ia[] = {I_ALT, KC_A, COMBO_END};
 const uint16_t PROGMEM my_ao[] = {KC_A, KC_O, COMBO_END};
 
 const uint16_t PROGMEM my_tn[] = {KC_T, KC_N, COMBO_END};
-const uint16_t PROGMEM my_ns[] = {KC_N, KC_S, COMBO_END};
+const uint16_t PROGMEM my_ns[] = {KC_N, S_ALT, COMBO_END};
 
 const uint16_t PROGMEM my_wr[] = {KC_W, KC_R, COMBO_END};
 const uint16_t PROGMEM my_ry[] = {KC_R, KC_Y, COMBO_END};
 
-const uint16_t PROGMEM my_ts[] = {KC_T, KC_S, COMBO_END};
-const uint16_t PROGMEM my_sh[] = {KC_S, KC_H, COMBO_END};
+const uint16_t PROGMEM my_ts[] = {KC_T, S_ALT, COMBO_END};
+const uint16_t PROGMEM my_sh[] = {S_ALT, H_CTL, COMBO_END};
 
-const uint16_t PROGMEM my_ei[] = {KC_E, KC_I, COMBO_END};
-const uint16_t PROGMEM my_zx[] = {KC_Z, KC_X, COMBO_END};
+const uint16_t PROGMEM my_ei[] = {E_CTL, I_ALT, COMBO_END};
+const uint16_t PROGMEM my_zx[] = {Z_GUI, KC_X, COMBO_END};
 
 const uint16_t PROGMEM my_xv[] = {KC_X, KC_V, COMBO_END};
 const uint16_t PROGMEM my_dj[] = {KC_D, KC_J, COMBO_END};
 
-const uint16_t PROGMEM my_jb[] = {KC_J, KC_B, COMBO_END};
-const uint16_t PROGMEM my_io[] = {KC_I, KC_O, COMBO_END};
+const uint16_t PROGMEM my_jb[] = {KC_J, B_GUI, COMBO_END};
+const uint16_t PROGMEM my_io[] = {I_ALT, KC_O, COMBO_END};
 
 const uint16_t PROGMEM btn3_combo[] = {KC_BTN1, KC_BTN2, COMBO_END};
 
