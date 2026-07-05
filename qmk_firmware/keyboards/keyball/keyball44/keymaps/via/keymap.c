@@ -1,4 +1,4 @@
- /*
+/*
 Copyright 2022 @Yowkees
 Copyright 2022 MURAOKA Taro (aka KoRoN, @kaoriya)
 
@@ -17,7 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include QMK_KEYBOARD_H
-
 #include "quantum.h"
 
 // clang-format off
@@ -56,9 +55,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 layer_state_t layer_state_set_user(layer_state_t state) {
     // Auto enable scroll mode when the highest layer is 3
     keyball_set_scroll_mode(get_highest_layer(state) == 3);
-  #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
+#ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
     keyball_keep_auto_mouse_layer_if_needed(state);
-  #endif
+#endif
     return state;
 }
 
@@ -75,56 +74,98 @@ void oledkit_render_info_user(void) {
 
 #ifdef COMBO_ENABLE
 
-enum combos{
+#define CURRENT_COMBO_COUNT 17
 
-TQ_QUES,
-DV_ENT,
-MJ_BSPC,
-BTN1_BTN2_TO_BTN3,
-SPC_SFT_ENT,
+#if COMBO_COUNT != CURRENT_COMBO_COUNT
+#    error "Set COMBO_COUNT to 17 in config.h"
+#endif
+
+enum combos {
+
 LU_UP,
 XC_DOWN,
 IA_LEFT,
 AO_RIGHT,
-TN_BTN1,
-NS_BTN2,
+
+TN_CTRL_BSPC,
+NS_DEL,
 WR_BTN4,
 RY_BTN5,
-TS_BTN3
+TS_ESC,
+
+SH_CTRL_BSPC,
+EI_F10,
+ZX_F7,
+XV_HOME,
+DJ_END,
+JB_ZKHK,
+IO_WIN_H,
+
+BTN1_BTN2_TO_BTN3,
 
 };
 
-const uint16_t PROGMEM my_tq[] = {KC_T, KC_Q, COMBO_END};
-const uint16_t PROGMEM my_dv[] = {KC_D, KC_V, COMBO_END};
-const uint16_t PROGMEM my_mj[] = {KC_M, KC_J, COMBO_END};
-const uint16_t PROGMEM btn3_combo[] = { KC_BTN1, KC_BTN2, COMBO_END };
-const uint16_t PROGMEM spc_sft_combo[] = {LT(1, KC_SPC), KC_LSFT, COMBO_END};
 const uint16_t PROGMEM my_lu[] = {KC_L, KC_U, COMBO_END};
 const uint16_t PROGMEM my_xc[] = {KC_X, KC_C, COMBO_END};
+
 const uint16_t PROGMEM my_ia[] = {KC_I, KC_A, COMBO_END};
 const uint16_t PROGMEM my_ao[] = {KC_A, KC_O, COMBO_END};
+
 const uint16_t PROGMEM my_tn[] = {KC_T, KC_N, COMBO_END};
 const uint16_t PROGMEM my_ns[] = {KC_N, KC_S, COMBO_END};
+
 const uint16_t PROGMEM my_wr[] = {KC_W, KC_R, COMBO_END};
 const uint16_t PROGMEM my_ry[] = {KC_R, KC_Y, COMBO_END};
+
 const uint16_t PROGMEM my_ts[] = {KC_T, KC_S, COMBO_END};
+const uint16_t PROGMEM my_sh[] = {KC_S, KC_H, COMBO_END};
 
-combo_t key_combos[] = {
+const uint16_t PROGMEM my_ei[] = {KC_E, KC_I, COMBO_END};
+const uint16_t PROGMEM my_zx[] = {KC_Z, KC_X, COMBO_END};
 
-[TQ_QUES] = COMBO(my_tq, KC_QUES), 
-[DV_ENT]  = COMBO(my_dv,  KC_ENT),
-[MJ_BSPC] = COMBO(my_mj, KC_BSPC),
-[BTN1_BTN2_TO_BTN3] = COMBO(btn3_combo, KC_BTN3),
-[SPC_SFT_ENT] = COMBO(spc_sft_combo, KC_ENT),
+const uint16_t PROGMEM my_xv[] = {KC_X, KC_V, COMBO_END};
+const uint16_t PROGMEM my_dj[] = {KC_D, KC_J, COMBO_END};
+
+const uint16_t PROGMEM my_jb[] = {KC_J, KC_B, COMBO_END};
+const uint16_t PROGMEM my_io[] = {KC_I, KC_O, COMBO_END};
+
+const uint16_t PROGMEM btn3_combo[] = {KC_BTN1, KC_BTN2, COMBO_END};
+
+combo_t key_combos[COMBO_COUNT] = {
+
 [LU_UP] = COMBO(my_lu, KC_UP),
+
 [XC_DOWN] = COMBO(my_xc, KC_DOWN),
+
 [IA_LEFT] = COMBO(my_ia, KC_LEFT),
+
 [AO_RIGHT] = COMBO(my_ao, KC_RIGHT),
-[TN_BTN1] = COMBO(my_tn, KC_BTN1),
-[NS_BTN2] = COMBO(my_ns, KC_BTN2),
+
+[TN_CTRL_BSPC] = COMBO(my_tn, LCTL(KC_BSPC)),
+
+[NS_DEL] = COMBO(my_ns, KC_DEL),
+
 [WR_BTN4] = COMBO(my_wr, KC_BTN4),
+
 [RY_BTN5] = COMBO(my_ry, KC_BTN5),
-[TS_BTN3] = COMBO(my_ts, KC_BTN3),
+
+[TS_ESC] = COMBO(my_ts, KC_ESC),
+
+[SH_CTRL_BSPC] = COMBO(my_sh, LCTL(KC_BSPC)),
+
+[EI_F10] = COMBO(my_ei, KC_F10),
+
+[ZX_F7] = COMBO(my_zx, KC_F7),
+
+[XV_HOME] = COMBO(my_xv, KC_HOME),
+
+[DJ_END] = COMBO(my_dj, KC_END),
+
+[JB_ZKHK] = COMBO(my_jb, KC_GRV),
+
+[IO_WIN_H] = COMBO(my_io, LGUI(KC_H)),
+
+[BTN1_BTN2_TO_BTN3] = COMBO(btn3_combo, KC_BTN3),
 
 };
 
