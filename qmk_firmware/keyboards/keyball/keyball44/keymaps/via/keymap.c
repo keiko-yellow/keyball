@@ -1,18 +1,27 @@
 /*
-Copyright 2022  @Yowkees
+Copyright 2022 @Yowkees
 Copyright 2022 MURAOKA Taro (aka KoRoN, @kaoriya)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 2 of the License, or
 (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include QMK_KEYBOARD_H
+
 #include "quantum.h"
 
 /*
- * Keyball44 レイヤー0の長押しキー定義
+ * Remap上で長押しキーになっているキー
  *
  * E : 単打 E / 長押し 左Ctrl
  * I : 単打 I / 長押し 左Alt
@@ -34,9 +43,9 @@ the Free Software Foundation, either version 2 of the License, or
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // keymap for default (VIA)
   [0] = LAYOUT_universal(
-    KC_ESC   , KC_Q     , KC_W     , E_CTL    , KC_R     , KC_T     ,                                        KC_Y     , KC_U     , I_ALT    , KC_O     , KC_P     , KC_DEL   ,
-    KC_TAB   , KC_A     , S_ALT    , KC_D     , KC_F     , KC_G     ,                                        H_CTL    , KC_J     , KC_K     , KC_L     , KC_SCLN  , S(KC_7)  ,
-    KC_LSFT  , Z_GUI    , KC_X     , KC_C     , KC_V     , B_GUI    ,                                        KC_N     , KC_M     , KC_COMM  , KC_DOT   , KC_SLSH  , KC_INT1  ,
+    KC_ESC   , KC_Q     , KC_W     , KC_E     , KC_R     , KC_T     ,                                        KC_Y     , KC_U     , KC_I     , KC_O     , KC_P     , KC_DEL   ,
+    KC_TAB   , KC_A     , KC_S     , KC_D     , KC_F     , KC_G     ,                                        KC_H     , KC_J     , KC_K     , KC_L     , KC_SCLN  , S(KC_7)  ,
+    KC_LSFT  , KC_Z     , KC_X     , KC_C     , KC_V     , KC_B     ,                                        KC_N     , KC_M     , KC_COMM  , KC_DOT   , KC_SLSH  , KC_INT1  ,
               KC_LALT,KC_LGUI,LCTL_T(KC_LNG2)     ,LT(1,KC_SPC),LT(3,KC_LNG1),                  KC_BSPC,LT(2,KC_ENT), RCTL_T(KC_LNG2),     KC_RALT  , KC_PSCR
   ),
 
@@ -66,11 +75,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 layer_state_t layer_state_set_user(layer_state_t state) {
     // Auto enable scroll mode when the highest layer is 3
     keyball_set_scroll_mode(get_highest_layer(state) == 3);
-
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
     keyball_keep_auto_mouse_layer_if_needed(state);
 #endif
-
     return state;
 }
 
@@ -147,35 +154,27 @@ const uint16_t PROGMEM btn3_combo[] = {KC_BTN1, KC_BTN2, COMBO_END};
 combo_t key_combos[COMBO_COUNT] = {
 
 [LU_UP] = COMBO(my_lu, KC_UP),
-
 [XC_DOWN] = COMBO(my_xc, KC_DOWN),
 
 [IA_LEFT] = COMBO(my_ia, KC_LEFT),
-
 [AO_RIGHT] = COMBO(my_ao, KC_RIGHT),
 
 [TN_CTRL_BSPC] = COMBO(my_tn, LCTL(KC_BSPC)),
-
 [NS_DEL] = COMBO(my_ns, KC_DEL),
 
 [WR_BTN4] = COMBO(my_wr, KC_BTN4),
-
 [RY_BTN5] = COMBO(my_ry, KC_BTN5),
 
 [TS_ESC] = COMBO(my_ts, KC_ESC),
-
 [SH_CTRL_BSPC] = COMBO(my_sh, LCTL(KC_BSPC)),
 
 [EI_F10] = COMBO(my_ei, KC_F10),
-
 [ZX_F7] = COMBO(my_zx, KC_F7),
 
 [XV_HOME] = COMBO(my_xv, KC_HOME),
-
 [DJ_END] = COMBO(my_dj, KC_END),
 
 [JB_ZKHK] = COMBO(my_jb, KC_GRV),
-
 [IO_WIN_H] = COMBO(my_io, LGUI(KC_H)),
 
 [BTN1_BTN2_TO_BTN3] = COMBO(btn3_combo, KC_BTN3),
