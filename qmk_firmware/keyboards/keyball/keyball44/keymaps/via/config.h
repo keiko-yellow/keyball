@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#define DYNAMIC_KEYMAP_LAYER_COUNT 7
+#define DYNAMIC_KEYMAP_LAYER_COUNT 5
 
 #ifdef RGBLIGHT_ENABLE
 //#    define RGBLIGHT_EFFECT_BREATHING
@@ -41,5 +41,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define AUTO_MOUSE_DEFAULT_LAYER 1
 #define AUTO_MOUSE_LAYER_KEEP_TIME 30000
 #define AUTO_MOUSE_THRESHOLD 30
-#define COMBO_COUNT 14
+#define COMBO_COUNT 17
 #define COMBO_TERM 80
