@@ -37,6 +37,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define POINTING_DEVICE_AUTO_MOUSE_ENABLE
 #define AUTO_MOUSE_DEFAULT_LAYER 1
+
+/*
+ * Combo設定
+ *
+ * keymap.c 側のCombo数は17個。
+ * 数が合わない場合は keymap.c 側でビルドエラーにする。
+ */
 #define COMBO_COUNT 17
-#define COMBO_TERM 50 // 同時押し判定時間　長くすると文字入力時に支障。可能な限り短く
+
+/*
+ * 同時押し判定時間。
+ * 50で効きにくい場合は 60〜80 に上げる。
+ * まずは入力への影響を抑えるため50。
+ */
+#define COMBO_TERM 50
+
 #define AUTO_MOUSE_LAYER_KEEP_TIME 30000
