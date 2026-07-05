@@ -94,13 +94,15 @@ void oledkit_render_info_user(void) {
 
 #ifdef COMBO_ENABLE
 
-#define CURRENT_COMBO_COUNT 19
+#define CURRENT_COMBO_COUNT 20
 
 #if COMBO_COUNT != CURRENT_COMBO_COUNT
-#    error "Set COMBO_COUNT to 19 in config.h"
+#    error "Set COMBO_COUNT to 20 in config.h"
 #endif
 
 enum combos {
+
+QL_ESC,
 
 LU_UP,
 XC_DOWN,
@@ -109,9 +111,9 @@ AO_RIGHT,
 
 TN_CTRL_BSPC,
 
-NS_DEL_RALT,
-NS_DEL_LALT,
-NS_DEL_PLAIN,
+CV_CTRL_DEL,
+DM_CTRL_BSPC,
+MJ_DEL,
 
 WR_BTN4,
 RY_BTN5,
@@ -129,7 +131,7 @@ BTN1_BTN2_TO_BTN3,
 
 };
 
-#define S_LALT LALT_T(KC_S)
+const uint16_t PROGMEM my_ql[] = {KC_Q, KC_L, COMBO_END};
 
 const uint16_t PROGMEM my_lu[] = {KC_L, KC_U, COMBO_END};
 const uint16_t PROGMEM my_xc[] = {KC_X, KC_C, COMBO_END};
@@ -140,12 +142,13 @@ const uint16_t PROGMEM my_ao[] = {KC_A, KC_O, COMBO_END};
 const uint16_t PROGMEM my_tn[] = {KC_T, KC_N, COMBO_END};
 
 /*
- * N + S → Delete
- * Sキーが RALT_T / LALT_T / KC_S のどれで保存されていても拾う
+ * C + V → 右単語削除 Ctrl + Delete
+ * D + M → 左単語削除 Ctrl + Backspace
+ * M + J → Delete
  */
-const uint16_t PROGMEM my_ns_ralt[]  = {KC_N, S_ALT,  COMBO_END};
-const uint16_t PROGMEM my_ns_lalt[]  = {KC_N, S_LALT, COMBO_END};
-const uint16_t PROGMEM my_ns_plain[] = {KC_N, KC_S,   COMBO_END};
+const uint16_t PROGMEM my_cv[] = {KC_C, KC_V, COMBO_END};
+const uint16_t PROGMEM my_dm[] = {KC_D, KC_M, COMBO_END};
+const uint16_t PROGMEM my_mj[] = {KC_M, KC_J, COMBO_END};
 
 const uint16_t PROGMEM my_wr[] = {KC_W, KC_R, COMBO_END};
 const uint16_t PROGMEM my_ry[] = {KC_R, KC_Y, COMBO_END};
@@ -166,6 +169,8 @@ const uint16_t PROGMEM btn3_combo[] = {KC_BTN1, KC_BTN2, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
 
+[QL_ESC] = COMBO(my_ql, KC_ESC),
+
 [LU_UP] = COMBO(my_lu, KC_UP),
 [XC_DOWN] = COMBO(my_xc, KC_DOWN),
 
@@ -174,9 +179,9 @@ combo_t key_combos[COMBO_COUNT] = {
 
 [TN_CTRL_BSPC] = COMBO(my_tn, LCTL(KC_BSPC)),
 
-[NS_DEL_RALT]  = COMBO(my_ns_ralt,  KC_DEL),
-[NS_DEL_LALT]  = COMBO(my_ns_lalt,  KC_DEL),
-[NS_DEL_PLAIN] = COMBO(my_ns_plain, KC_DEL),
+[CV_CTRL_DEL] = COMBO(my_cv, LCTL(KC_DEL)),
+[DM_CTRL_BSPC] = COMBO(my_dm, LCTL(KC_BSPC)),
+[MJ_DEL] = COMBO(my_mj, KC_DEL),
 
 [WR_BTN4] = COMBO(my_wr, KC_BTN4),
 [RY_BTN5] = COMBO(my_ry, KC_BTN5),
