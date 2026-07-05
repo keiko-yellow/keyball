@@ -105,14 +105,19 @@ XC_DOWN,
 IA_LEFT,
 AO_RIGHT,
 
-TN_BTN1,
-NS_BTN2,
+TN_CTRL_BSPC,
+NS_DEL,
 WR_BTN4,
 RY_BTN5,
-TS_BTN3,
+TS_ESC,
 
-SH_DEL,
-EI_ESC,
+SH_CTRL_BSPC,
+EI_F10,
+ZX_F7,
+XV_HOME,
+DJ_END,
+JB_ZKHK,
+IO_WIN_H,
 
 BTN1_BTN2_TO_BTN3,
 
@@ -128,9 +133,13 @@ const uint16_t PROGMEM my_ia[] = {I_ALT, KC_A, COMBO_END};
 
 const uint16_t PROGMEM my_ao[] = {KC_A, KC_O, COMBO_END};
 
+/*
+ * T + N -> Ctrl + Backspace
+ */
 const uint16_t PROGMEM my_tn[] = {KC_T, KC_N, COMBO_END};
 
 /*
+ * N + S -> Delete
  * S は単打S / 長押し右Alt なので S_ALT
  */
 const uint16_t PROGMEM my_ns[] = {KC_N, S_ALT, COMBO_END};
@@ -139,25 +148,49 @@ const uint16_t PROGMEM my_wr[] = {KC_W, KC_R, COMBO_END};
 const uint16_t PROGMEM my_ry[] = {KC_R, KC_Y, COMBO_END};
 
 /*
+ * T + S -> Escape
  * S は単打S / 長押し右Alt なので S_ALT
  */
 const uint16_t PROGMEM my_ts[] = {KC_T, S_ALT, COMBO_END};
 
 /*
- * 追加Combo
- * S + H -> Delete
- * E + I -> Escape
- *
- * S/H は右手側の長押しキーなので、
- * S_ALT = RALT_T(KC_S)
- * H_CTL = RCTL_T(KC_H)
- *
- * E/I は左手側の長押しキーなので、
- * E_CTL = LCTL_T(KC_E)
- * I_ALT = LALT_T(KC_I)
+ * S + H -> Ctrl + Backspace
  */
 const uint16_t PROGMEM my_sh[] = {S_ALT, H_CTL, COMBO_END};
+
+/*
+ * E + I -> F10
+ * E/I は長押しキーなので E_CTL / I_ALT を使う
+ */
 const uint16_t PROGMEM my_ei[] = {E_CTL, I_ALT, COMBO_END};
+
+/*
+ * Z + X -> F7
+ * Z は単打Z / 長押し左Win-Cmd なので Z_GUI
+ */
+const uint16_t PROGMEM my_zx[] = {Z_GUI, KC_X, COMBO_END};
+
+/*
+ * X + V -> Home
+ */
+const uint16_t PROGMEM my_xv[] = {KC_X, KC_V, COMBO_END};
+
+/*
+ * D + J -> End
+ */
+const uint16_t PROGMEM my_dj[] = {KC_D, KC_J, COMBO_END};
+
+/*
+ * J + B -> 半角/全角
+ * B は単打B / 長押し右Win-Cmd なので B_GUI
+ */
+const uint16_t PROGMEM my_jb[] = {KC_J, B_GUI, COMBO_END};
+
+/*
+ * I + O -> Win + H
+ * Windows音声入力を開く想定
+ */
+const uint16_t PROGMEM my_io[] = {I_ALT, KC_O, COMBO_END};
 
 const uint16_t PROGMEM btn3_combo[] = {KC_BTN1, KC_BTN2, COMBO_END};
 
@@ -171,19 +204,29 @@ combo_t key_combos[] = {
 
 [AO_RIGHT] = COMBO(my_ao, KC_RIGHT),
 
-[TN_BTN1] = COMBO(my_tn, KC_BTN1),
+[TN_CTRL_BSPC] = COMBO(my_tn, LCTL(KC_BSPC)),
 
-[NS_BTN2] = COMBO(my_ns, KC_BTN2),
+[NS_DEL] = COMBO(my_ns, KC_DEL),
 
 [WR_BTN4] = COMBO(my_wr, KC_BTN4),
 
 [RY_BTN5] = COMBO(my_ry, KC_BTN5),
 
-[TS_BTN3] = COMBO(my_ts, KC_BTN3),
+[TS_ESC] = COMBO(my_ts, KC_ESC),
 
-[SH_DEL] = COMBO(my_sh, KC_DEL),
+[SH_CTRL_BSPC] = COMBO(my_sh, LCTL(KC_BSPC)),
 
-[EI_ESC] = COMBO(my_ei, KC_ESC),
+[EI_F10] = COMBO(my_ei, KC_F10),
+
+[ZX_F7] = COMBO(my_zx, KC_F7),
+
+[XV_HOME] = COMBO(my_xv, KC_HOME),
+
+[DJ_END] = COMBO(my_dj, KC_END),
+
+[JB_ZKHK] = COMBO(my_jb, KC_GRV),
+
+[IO_WIN_H] = COMBO(my_io, LGUI(KC_H)),
 
 [BTN1_BTN2_TO_BTN3] = COMBO(btn3_combo, KC_BTN3),
 
