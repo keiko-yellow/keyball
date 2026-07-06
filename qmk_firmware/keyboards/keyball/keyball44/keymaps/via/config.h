@@ -34,5 +34,11 @@ the Free Software Foundation, either version 2 of the License, or
 #define AUTO_MOUSE_LAYER_KEEP_TIME 30000
 #define AUTO_MOUSE_THRESHOLD 30
 
+/*
+ * Mod-Tapキーを含むComboを安定させる
+ */
+#define COMBO_ALLOW_ACTION_KEYS
+#define COMBO_TERM_PER_COMBO
+
 #define COMBO_COUNT 20
 #define COMBO_TERM 80
