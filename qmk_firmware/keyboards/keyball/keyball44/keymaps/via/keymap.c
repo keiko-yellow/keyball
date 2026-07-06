@@ -94,10 +94,10 @@ void oledkit_render_info_user(void) {
 
 #ifdef COMBO_ENABLE
 
-#define CURRENT_COMBO_COUNT 20
+#define CURRENT_COMBO_COUNT 18
 
 #if COMBO_COUNT != CURRENT_COMBO_COUNT
-#    error "Set COMBO_COUNT to 20 in config.h"
+#    error "Set COMBO_COUNT to 18 in config.h"
 #endif
 
 enum combos {
@@ -109,22 +109,19 @@ XC_DOWN,
 IA_LEFT,
 AO_RIGHT,
 
-TN_CTRL_BSPC,
-
-CV_CTRL_DEL,
-DM_CTRL_BSPC,
+CV_CTRL_BSPC,
+DM_CTRL_DEL,
 MJ_DEL,
 
 WR_BTN4,
 RY_BTN5,
 TS_ESC,
 
-SH_CTRL_BSPC,
+SH_ZKHK,
 EI_F10,
 ZX_F7,
 XV_HOME,
 DJ_END,
-JB_ZKHK,
 IO_WIN_H,
 
 BTN1_BTN2_TO_BTN3,
@@ -139,11 +136,9 @@ const uint16_t PROGMEM my_xc[] = {KC_X, KC_C, COMBO_END};
 const uint16_t PROGMEM my_ia[] = {I_ALT, KC_A, COMBO_END};
 const uint16_t PROGMEM my_ao[] = {KC_A, KC_O, COMBO_END};
 
-const uint16_t PROGMEM my_tn[] = {KC_T, KC_N, COMBO_END};
-
 /*
- * C + V → 右単語削除 Ctrl + Delete
- * D + M → 左単語削除 Ctrl + Backspace
+ * C + V → 左単語削除 Ctrl + Backspace
+ * D + M → 右単語削除 Ctrl + Delete
  * M + J → Delete
  */
 const uint16_t PROGMEM my_cv[] = {KC_C, KC_V, COMBO_END};
@@ -154,6 +149,11 @@ const uint16_t PROGMEM my_wr[] = {KC_W, KC_R, COMBO_END};
 const uint16_t PROGMEM my_ry[] = {KC_R, KC_Y, COMBO_END};
 
 const uint16_t PROGMEM my_ts[] = {KC_T, S_ALT, COMBO_END};
+
+/*
+ * S + H → 半角/全角
+ * J + B の半角/全角Comboは削除済み
+ */
 const uint16_t PROGMEM my_sh[] = {S_ALT, H_CTL, COMBO_END};
 
 const uint16_t PROGMEM my_ei[] = {E_CTL, I_ALT, COMBO_END};
@@ -162,7 +162,6 @@ const uint16_t PROGMEM my_zx[] = {Z_GUI, KC_X, COMBO_END};
 const uint16_t PROGMEM my_xv[] = {KC_X, KC_V, COMBO_END};
 const uint16_t PROGMEM my_dj[] = {KC_D, KC_J, COMBO_END};
 
-const uint16_t PROGMEM my_jb[] = {KC_J, B_GUI, COMBO_END};
 const uint16_t PROGMEM my_io[] = {I_ALT, KC_O, COMBO_END};
 
 const uint16_t PROGMEM btn3_combo[] = {KC_BTN1, KC_BTN2, COMBO_END};
@@ -177,10 +176,8 @@ combo_t key_combos[COMBO_COUNT] = {
 [IA_LEFT] = COMBO(my_ia, KC_LEFT),
 [AO_RIGHT] = COMBO(my_ao, KC_RIGHT),
 
-[TN_CTRL_BSPC] = COMBO(my_tn, LCTL(KC_BSPC)),
-
-[CV_CTRL_DEL] = COMBO(my_cv, LCTL(KC_DEL)),
-[DM_CTRL_BSPC] = COMBO(my_dm, LCTL(KC_BSPC)),
+[CV_CTRL_BSPC] = COMBO(my_cv, LCTL(KC_BSPC)),
+[DM_CTRL_DEL] = COMBO(my_dm, LCTL(KC_DEL)),
 [MJ_DEL] = COMBO(my_mj, KC_DEL),
 
 [WR_BTN4] = COMBO(my_wr, KC_BTN4),
@@ -188,7 +185,7 @@ combo_t key_combos[COMBO_COUNT] = {
 
 [TS_ESC] = COMBO(my_ts, KC_ESC),
 
-[SH_CTRL_BSPC] = COMBO(my_sh, LCTL(KC_BSPC)),
+[SH_ZKHK] = COMBO(my_sh, KC_GRV),
 
 [EI_F10] = COMBO(my_ei, KC_F10),
 [ZX_F7] = COMBO(my_zx, KC_F7),
@@ -196,7 +193,6 @@ combo_t key_combos[COMBO_COUNT] = {
 [XV_HOME] = COMBO(my_xv, KC_HOME),
 [DJ_END] = COMBO(my_dj, KC_END),
 
-[JB_ZKHK] = COMBO(my_jb, KC_GRV),
 [IO_WIN_H] = COMBO(my_io, LGUI(KC_H)),
 
 [BTN1_BTN2_TO_BTN3] = COMBO(btn3_combo, KC_BTN3),
@@ -204,7 +200,7 @@ combo_t key_combos[COMBO_COUNT] = {
 };
 
 /*
- * 効いていなかったComboは判定時間を長めにする
+ * 効きにくかったComboは判定時間を長めにする
  *
  * 通常 : 80ms
  * 下記 : 140ms
@@ -212,12 +208,11 @@ combo_t key_combos[COMBO_COUNT] = {
 uint16_t get_combo_term(uint16_t index, combo_t *combo) {
     switch (index) {
         case QL_ESC:
-        case TN_CTRL_BSPC:
-        case CV_CTRL_DEL:
-        case DM_CTRL_BSPC:
+        case CV_CTRL_BSPC:
+        case DM_CTRL_DEL:
         case MJ_DEL:
         case TS_ESC:
-        case SH_CTRL_BSPC:
+        case SH_ZKHK:
         case EI_F10:
             return 140;
 
