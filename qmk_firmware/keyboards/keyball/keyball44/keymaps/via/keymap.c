@@ -203,4 +203,27 @@ combo_t key_combos[COMBO_COUNT] = {
 
 };
 
+/*
+ * 効いていなかったComboは判定時間を長めにする
+ *
+ * 通常 : 80ms
+ * 下記 : 140ms
+ */
+uint16_t get_combo_term(uint16_t index, combo_t *combo) {
+    switch (index) {
+        case QL_ESC:
+        case TN_CTRL_BSPC:
+        case CV_CTRL_DEL:
+        case DM_CTRL_BSPC:
+        case MJ_DEL:
+        case TS_ESC:
+        case SH_CTRL_BSPC:
+        case EI_F10:
+            return 140;
+
+        default:
+            return COMBO_TERM;
+    }
+}
+
 #endif
