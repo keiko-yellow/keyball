@@ -95,13 +95,13 @@ void oledkit_render_info_user(void) {
 #ifdef COMBO_ENABLE
 
 /*
- * 元の18コンボをすべて残し、指定された8コンボを追加。
- * 合計26コンボ。
+ * 元の18コンボをすべて残し、指定された7コンボを追加。
+ * 合計25コンボ。
  */
-#define CURRENT_COMBO_COUNT 26
+#define CURRENT_COMBO_COUNT 25
 
 #if COMBO_COUNT != CURRENT_COMBO_COUNT
-#    error "Set COMBO_COUNT to 26 in config.h"
+#    error "Set COMBO_COUNT to 25 in config.h"
 #endif
 
 enum combos {
@@ -125,7 +125,7 @@ enum combos {
     IO_WIN_H,
     BTN1_BTN2_TO_BTN3,
 
-    /* 今回追加する8コンボ */
+    /* 今回追加する7コンボ */
     YP_ESC,
     JB_F4,
     NUM_46_EQUAL,
@@ -133,7 +133,6 @@ enum combos {
     NUM_89_DIVIDE,
     NUM_45_PLUS,
     NUM_56_MINUS,
-    PGDN_ENT_PGUP,
 };
 
 /* 元からある18コンボ */
@@ -165,14 +164,7 @@ const uint16_t PROGMEM my_zx[] = {Z_GUI, KC_X, COMBO_END};
 const uint16_t PROGMEM my_xv[] = {KC_X, KC_V, COMBO_END};
 const uint16_t PROGMEM my_dj[] = {KC_D, KC_J, COMBO_END};
 const uint16_t PROGMEM my_io[] = {I_ALT, KC_O, COMBO_END};
-/*
- * COMBO_ONLY_FROM_LAYER 0 を使うため、マウスレイヤー1の
- * BTN1・BTN2の「物理位置」にあるレイヤー0キーコードで指定する。
- *
- * BTN1位置 = KC_J
- * BTN2位置 = KC_L
- */
-const uint16_t PROGMEM btn3_combo[] = {KC_J, KC_L, COMBO_END};
+const uint16_t PROGMEM btn3_combo[] = {KC_BTN1, KC_BTN2, COMBO_END};
 
 /* 今回追加する通常レイヤーのコンボ */
 const uint16_t PROGMEM my_yp[] = {KC_Y, KC_P, COMBO_END};
@@ -184,43 +176,17 @@ const uint16_t PROGMEM my_yp[] = {KC_Y, KC_P, COMBO_END};
 const uint16_t PROGMEM my_jb[] = {KC_J, B_GUI, COMBO_END};
 
 /*
- * 数字・記号レイヤー2限定のコンボ。
- * Windows側が日本語配列の場合に、roBaと同じ記号を出すキーコード。
- */
-/*
- * COMBO_ONLY_FROM_LAYER 0 を使うため、数字そのものではなく、
- * 数字レイヤー2で各数字が置かれている「物理位置」の
- * レイヤー0キーコードを指定する。
+ * Remap上の数字・テンキーレイヤー3限定のコンボ。
  *
- * 数字4位置 = S_ALT
- * 数字5位置 = KC_D
- * 数字6位置 = KC_F
- * 数字7位置 = KC_W
- * 数字8位置 = E_CTL
- * 数字9位置 = KC_R
+ * 画像の「Num 4～Num 9」は通常数字 KC_4～KC_9 ではなく、
+ * テンキー用キーコード KC_P4～KC_P9。
  */
-const uint16_t PROGMEM my_num_46[] = {S_ALT, KC_F, COMBO_END};
-const uint16_t PROGMEM my_num_78[] = {KC_W, E_CTL, COMBO_END};
-const uint16_t PROGMEM my_num_89[] = {E_CTL, KC_R, COMBO_END};
-const uint16_t PROGMEM my_num_45[] = {S_ALT, KC_D, COMBO_END};
-const uint16_t PROGMEM my_num_56[] = {KC_D, KC_F, COMBO_END};
+const uint16_t PROGMEM my_num_46[] = {KC_P4, KC_P6, COMBO_END};
+const uint16_t PROGMEM my_num_78[] = {KC_P7, KC_P8, COMBO_END};
+const uint16_t PROGMEM my_num_89[] = {KC_P8, KC_P9, COMBO_END};
+const uint16_t PROGMEM my_num_45[] = {KC_P4, KC_P5, COMBO_END};
+const uint16_t PROGMEM my_num_56[] = {KC_P5, KC_P6, COMBO_END};
 
-/*
- * マウスレイヤー1のPage Downキーと、親指Enterキーのコンボ。
- *
- * Page Down : レイヤー1のKC_PGDN
- * Enter     : レイヤー0から透過するLT(2, KC_ENT)
- */
-/*
- * COMBO_ONLY_FROM_LAYER 0 を使うため、
- * マウスレイヤー1のPage Down位置にあるレイヤー0キー KC_N と、
- * 親指EnterのLTキーで指定する。
- */
-const uint16_t PROGMEM my_pgdn_ent[] = {
-    KC_N,
-    LT(2, KC_ENT),
-    COMBO_END
-};
 
 combo_t key_combos[COMBO_COUNT] = {
     /* 元からある18コンボ */
@@ -247,7 +213,7 @@ combo_t key_combos[COMBO_COUNT] = {
 
     [BTN1_BTN2_TO_BTN3] = COMBO(btn3_combo, KC_BTN3),
 
-    /* 今回追加する8コンボ */
+    /* 今回追加する7コンボ */
     [YP_ESC] = COMBO(my_yp, KC_ESC),
     [JB_F4] = COMBO(my_jb, KC_F4),
 
@@ -256,59 +222,26 @@ combo_t key_combos[COMBO_COUNT] = {
     [NUM_89_DIVIDE] = COMBO(my_num_89, KC_SLSH),
     [NUM_45_PLUS] = COMBO(my_num_45, S(KC_SCLN)),
     [NUM_56_MINUS] = COMBO(my_num_56, KC_MINS),
-
-    [PGDN_ENT_PGUP] = COMBO(my_pgdn_ent, KC_PGUP),
 };
 
 /*
- * 数字コンボは数字・記号レイヤー2だけで有効。
- * Page Down + Enterはマウスレイヤー1だけで有効。
+ * 数字コンボは、Remap上の数字・テンキーレイヤー3だけで有効。
  */
 bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
     uint8_t current_layer = get_highest_layer(layer_state | default_layer_state);
 
     switch (combo_index) {
-        /*
-         * 数字コンボは、数字・記号レイヤー2だけで有効。
-         */
         case NUM_46_EQUAL:
         case NUM_78_MULTIPLY:
         case NUM_89_DIVIDE:
         case NUM_45_PLUS:
         case NUM_56_MINUS:
-            return current_layer == 2;
+            return current_layer == 3;
 
-        /*
-         * マウスレイヤー1だけで有効。
-         */
-        case BTN1_BTN2_TO_BTN3:
-        case PGDN_ENT_PGUP:
-            return current_layer == 1;
-
-        /*
-         * 通常文字コンボは通常レイヤー0に加え、
-         * 自動マウスレイヤー1が残っている間も有効にする。
-         *
-         * トラックボール操作後はレイヤー1が最大30秒残るため、
-         * レイヤー1を許可しないとY+Pなどが反応しない。
-         */
         default:
-            return current_layer == 0 || current_layer == 1;
+            return true;
     }
 }
-
-/*
- * Page Downを押した瞬間に自動マウスレイヤー1が解除されると、
- * 続けて押す親指Enterとのコンボが成立しない。
- *
- * Page Downをマウスレイヤー維持対象として扱い、
- * Page Down + Enter → Page Up の判定が終わるまでレイヤー1を保持する。
- */
-#ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
-bool is_mouse_record_user(uint16_t keycode, keyrecord_t *record) {
-    return keycode == KC_PGDN;
-}
-#endif
 
 /*
  * 効きにくかったComboは判定時間を長めにする
@@ -325,6 +258,13 @@ uint16_t get_combo_term(uint16_t index, combo_t *combo) {
         case TS_ESC:
         case SH_ZKHK:
         case EI_F10:
+        case YP_ESC:
+        case JB_F4:
+        case NUM_46_EQUAL:
+        case NUM_78_MULTIPLY:
+        case NUM_89_DIVIDE:
+        case NUM_45_PLUS:
+        case NUM_56_MINUS:
             return 140;
 
         default:
