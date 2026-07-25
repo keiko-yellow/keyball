@@ -45,5 +45,11 @@ the Free Software Foundation, either version 2 of the License, or
  */
 #define COMBO_SHOULD_TRIGGER
 
+/*
+ * 自動マウスレイヤー1が有効でも、
+ * コンボはレイヤー0の物理位置を基準に判定する。
+ */
+#define COMBO_ONLY_FROM_LAYER 0
+
 #define COMBO_COUNT 26
 #define COMBO_TERM 80
