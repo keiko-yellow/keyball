@@ -1,7 +1,7 @@
 /*
 This is the c configuration file for the keymap
 
-Copyright 2022  @Yowkees
+Copyright 2022 @Yowkees
 Copyright 2022 MURAOKA Taro (aka KoRoN, @kaoriya)
 
 This program is free software: you can redistribute it and/or modify
@@ -15,16 +15,16 @@ the Free Software Foundation, either version 2 of the License, or
 #define DYNAMIC_KEYMAP_LAYER_COUNT 7
 
 #ifdef RGBLIGHT_ENABLE
-//#    define RGBLIGHT_EFFECT_BREATHING
-//#    define RGBLIGHT_EFFECT_RAINBOW_MOOD
-//#    define RGBLIGHT_EFFECT_RAINBOW_SWIRL
-//#    define RGBLIGHT_EFFECT_SNAKE
-//#    define RGBLIGHT_EFFECT_KNIGHT
-//#    define RGBLIGHT_EFFECT_CHRISTMAS
-//#    define RGBLIGHT_EFFECT_STATIC_GRADIENT
-//#    define RGBLIGHT_EFFECT_RGB_TEST
-//#    define RGBLIGHT_EFFECT_ALTERNATING
-//#    define RGBLIGHT_EFFECT_TWINKLE
+// #define RGBLIGHT_EFFECT_BREATHING
+// #define RGBLIGHT_EFFECT_RAINBOW_MOOD
+// #define RGBLIGHT_EFFECT_RAINBOW_SWIRL
+// #define RGBLIGHT_EFFECT_SNAKE
+// #define RGBLIGHT_EFFECT_KNIGHT
+// #define RGBLIGHT_EFFECT_CHRISTMAS
+// #define RGBLIGHT_EFFECT_STATIC_GRADIENT
+// #define RGBLIGHT_EFFECT_RGB_TEST
+// #define RGBLIGHT_EFFECT_ALTERNATING
+// #define RGBLIGHT_EFFECT_TWINKLE
 #endif
 
 #define TAP_CODE_DELAY 5
@@ -35,10 +35,15 @@ the Free Software Foundation, either version 2 of the License, or
 #define AUTO_MOUSE_THRESHOLD 30
 
 /*
- * Mod-Tapキーを含むComboを安定させる
+ * Mod-Tap・Layer-Tapキーを含むComboを安定させる
  */
 #define COMBO_ALLOW_ACTION_KEYS
 #define COMBO_TERM_PER_COMBO
 
-#define COMBO_COUNT 18
+/*
+ * 数字レイヤー限定、マウスレイヤー限定のCombo判定を有効にする
+ */
+#define COMBO_SHOULD_TRIGGER
+
+#define COMBO_COUNT 26
 #define COMBO_TERM 80
