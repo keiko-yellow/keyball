@@ -21,14 +21,20 @@ Copyright 2022 MURAOKA Taro (aka KoRoN, @kaoriya)
 #define TAP_CODE_DELAY 5
 
 /*
- * ナウ branch のオートマウス設定をそのまま維持。
+ * Keyball61では実際のマウスレイヤーが2。
+ * 元のconfig.hの1指定では、Shiftレイヤー1がAML対象になるため修正。
  */
 #define POINTING_DEVICE_AUTO_MOUSE_ENABLE
-#define AUTO_MOUSE_DEFAULT_LAYER 1
+#define AUTO_MOUSE_DEFAULT_LAYER 2
 #define AUTO_MOUSE_LAYER_KEEP_TIME 30000
+#define AUTO_MOUSE_THRESHOLD 30
 
 /*
- * 指定されたコンボは15個。
+ * Mod-Tapキーを含むComboとレイヤー限定Comboに必要
  */
-#define COMBO_COUNT 15
-#define COMBO_TERM 50
+#define COMBO_ALLOW_ACTION_KEYS
+#define COMBO_TERM_PER_COMBO
+#define COMBO_SHOULD_TRIGGER
+
+#define COMBO_COUNT 25
+#define COMBO_TERM 80

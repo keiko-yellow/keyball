@@ -12,7 +12,7 @@ the Free Software Foundation, either version 2 of the License, or
 #include "quantum.h"
 
 /*
- * ナウ branch のレイヤー0長押し設定
+ * Keyball44と同じレイヤー0長押し設定
  */
 #define E_CTL LCTL_T(KC_E)
 #define I_ALT LALT_T(KC_I)
@@ -23,6 +23,9 @@ the Free Software Foundation, either version 2 of the License, or
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+    /*
+     * Keyball61の物理配列・レイヤー配置は維持
+     */
     [0] = LAYOUT_universal(
         KC_ESC , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   , KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , KC_MINS, KC_DEL ,
         KC_Q   , KC_W   , E_CTL  , KC_R   , KC_T   , KC_Y   , KC_U   , I_ALT  , KC_O   , KC_P   , KC_INT3,
@@ -40,8 +43,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     /*
-     * Keyball61標準のマウスレイヤー。
-     * 配置・クリック・数値キーは変更していません。
+     * Keyball61のマウス兼数字レイヤー
      */
     [2] = LAYOUT_universal(
         SSNP_FRE, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, SSNP_VRT,
@@ -62,11 +64,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // clang-format on
 
 layer_state_t layer_state_set_user(layer_state_t state) {
-    // Auto enable scroll mode when the highest layer is 3
+    /*
+     * Keyball61では設定・スクロールレイヤーが3
+     */
     keyball_set_scroll_mode(get_highest_layer(state) == 3);
+
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
     keyball_keep_auto_mouse_layer_if_needed(state);
 #endif
+
     return state;
 }
 
@@ -82,25 +88,29 @@ void oledkit_render_info_user(void) {
 
 #ifdef COMBO_ENABLE
 
-#define CURRENT_COMBO_COUNT 15
+/*
+ * Keyball44 nowの25コンボをKeyball61へ移植
+ */
+#define CURRENT_COMBO_COUNT 25
 
 #if COMBO_COUNT != CURRENT_COMBO_COUNT
-#    error "Set COMBO_COUNT to 15 in config.h"
+#    error "Set COMBO_COUNT to 25 in config.h"
 #endif
 
-/*
- * ナウ branch をベースに、指定された15コンボだけを登録。
- * Keyball61のマウスレイヤーは変更しない。
- */
 enum combos {
     QL_ESC,
     LU_UP,
     XC_DOWN,
     IA_LEFT,
     AO_RIGHT,
+
     CV_CTRL_BSPC,
     DM_CTRL_DEL,
     MJ_DEL,
+
+    WR_BTN4,
+    RY_BTN5,
+
     TS_ESC,
     SH_ZKHK,
     EI_F10,
@@ -108,16 +118,35 @@ enum combos {
     XV_HOME,
     DJ_END,
     IO_WIN_H,
+
+    BTN1_BTN2_TO_BTN3,
+
+    YP_ESC,
+    JB_F4,
+
+    NUM_46_EQUAL,
+    NUM_78_MULTIPLY,
+    NUM_89_DIVIDE,
+    NUM_45_PLUS,
+    NUM_56_MINUS,
 };
 
+/*
+ * 通常レイヤーのコンボ
+ */
 const uint16_t PROGMEM my_ql[] = {KC_Q, KC_L, COMBO_END};
 const uint16_t PROGMEM my_lu[] = {KC_L, KC_U, COMBO_END};
 const uint16_t PROGMEM my_xc[] = {KC_X, KC_C, COMBO_END};
 const uint16_t PROGMEM my_ia[] = {I_ALT, KC_A, COMBO_END};
 const uint16_t PROGMEM my_ao[] = {KC_A, KC_O, COMBO_END};
+
 const uint16_t PROGMEM my_cv[] = {KC_C, KC_V, COMBO_END};
 const uint16_t PROGMEM my_dm[] = {KC_D, KC_M, COMBO_END};
 const uint16_t PROGMEM my_mj[] = {KC_M, KC_J, COMBO_END};
+
+const uint16_t PROGMEM my_wr[] = {KC_W, KC_R, COMBO_END};
+const uint16_t PROGMEM my_ry[] = {KC_R, KC_Y, COMBO_END};
+
 const uint16_t PROGMEM my_ts[] = {KC_T, S_ALT, COMBO_END};
 const uint16_t PROGMEM my_sh[] = {S_ALT, H_CTL, COMBO_END};
 const uint16_t PROGMEM my_ei[] = {E_CTL, I_ALT, COMBO_END};
@@ -126,22 +155,121 @@ const uint16_t PROGMEM my_xv[] = {KC_X, KC_V, COMBO_END};
 const uint16_t PROGMEM my_dj[] = {KC_D, KC_J, COMBO_END};
 const uint16_t PROGMEM my_io[] = {I_ALT, KC_O, COMBO_END};
 
+/*
+ * レイヤー2の左クリック＋右クリック
+ */
+const uint16_t PROGMEM btn3_combo[] = {KC_BTN1, KC_BTN2, COMBO_END};
+
+/*
+ * Keyball44で追加したコンボ
+ */
+const uint16_t PROGMEM my_yp[] = {KC_Y, KC_P, COMBO_END};
+
+/*
+ * BはMod-Tapなので、KC_BではなくB_GUIを指定
+ */
+const uint16_t PROGMEM my_jb[] = {KC_J, B_GUI, COMBO_END};
+
+/*
+ * Keyball61のレイヤー2は通常数字 KC_4～KC_9
+ * Keyball44のRemapで使用したテンキー KC_P4～KC_P9とは異なる
+ */
+const uint16_t PROGMEM my_num_46[] = {KC_4, KC_6, COMBO_END};
+const uint16_t PROGMEM my_num_78[] = {KC_7, KC_8, COMBO_END};
+const uint16_t PROGMEM my_num_89[] = {KC_8, KC_9, COMBO_END};
+const uint16_t PROGMEM my_num_45[] = {KC_4, KC_5, COMBO_END};
+const uint16_t PROGMEM my_num_56[] = {KC_5, KC_6, COMBO_END};
+
 combo_t key_combos[COMBO_COUNT] = {
-    [QL_ESC]       = COMBO(my_ql, KC_ESC),
-    [LU_UP]        = COMBO(my_lu, KC_UP),
-    [XC_DOWN]      = COMBO(my_xc, KC_DOWN),
-    [IA_LEFT]      = COMBO(my_ia, KC_LEFT),
-    [AO_RIGHT]     = COMBO(my_ao, KC_RIGHT),
+    [QL_ESC] = COMBO(my_ql, KC_ESC),
+    [LU_UP] = COMBO(my_lu, KC_UP),
+    [XC_DOWN] = COMBO(my_xc, KC_DOWN),
+    [IA_LEFT] = COMBO(my_ia, KC_LEFT),
+    [AO_RIGHT] = COMBO(my_ao, KC_RIGHT),
+
     [CV_CTRL_BSPC] = COMBO(my_cv, LCTL(KC_BSPC)),
-    [DM_CTRL_DEL]  = COMBO(my_dm, LCTL(KC_DEL)),
-    [MJ_DEL]       = COMBO(my_mj, KC_DEL),
-    [TS_ESC]       = COMBO(my_ts, KC_ESC),
-    [SH_ZKHK]      = COMBO(my_sh, KC_GRV),
-    [EI_F10]       = COMBO(my_ei, KC_F10),
-    [ZX_F7]        = COMBO(my_zx, KC_F7),
-    [XV_HOME]      = COMBO(my_xv, KC_HOME),
-    [DJ_END]       = COMBO(my_dj, KC_END),
-    [IO_WIN_H]     = COMBO(my_io, LGUI(KC_H)),
+    [DM_CTRL_DEL] = COMBO(my_dm, LCTL(KC_DEL)),
+    [MJ_DEL] = COMBO(my_mj, KC_DEL),
+
+    [WR_BTN4] = COMBO(my_wr, KC_BTN4),
+    [RY_BTN5] = COMBO(my_ry, KC_BTN5),
+
+    [TS_ESC] = COMBO(my_ts, KC_ESC),
+    [SH_ZKHK] = COMBO(my_sh, KC_GRV),
+    [EI_F10] = COMBO(my_ei, KC_F10),
+    [ZX_F7] = COMBO(my_zx, KC_F7),
+    [XV_HOME] = COMBO(my_xv, KC_HOME),
+    [DJ_END] = COMBO(my_dj, KC_END),
+    [IO_WIN_H] = COMBO(my_io, LGUI(KC_H)),
+
+    [BTN1_BTN2_TO_BTN3] = COMBO(btn3_combo, KC_BTN3),
+
+    [YP_ESC] = COMBO(my_yp, KC_ESC),
+    [JB_F4] = COMBO(my_jb, KC_F4),
+
+    /*
+     * Windows側が日本語配列の環境でroBa・Keyball44と
+     * 同じ記号を出すキーコード
+     */
+    [NUM_46_EQUAL] = COMBO(my_num_46, S(KC_MINS)),
+    [NUM_78_MULTIPLY] = COMBO(my_num_78, S(KC_QUOT)),
+    [NUM_89_DIVIDE] = COMBO(my_num_89, KC_SLSH),
+    [NUM_45_PLUS] = COMBO(my_num_45, S(KC_SCLN)),
+    [NUM_56_MINUS] = COMBO(my_num_56, KC_MINS),
 };
+
+/*
+ * Keyball61ではマウスと数字がレイヤー2にあるため、
+ * マウスボタンComboと数字Comboをレイヤー2だけに限定
+ */
+bool combo_should_trigger(
+    uint16_t combo_index,
+    combo_t *combo,
+    uint16_t keycode,
+    keyrecord_t *record
+) {
+    uint8_t current_layer =
+        get_highest_layer(layer_state | default_layer_state);
+
+    switch (combo_index) {
+        case BTN1_BTN2_TO_BTN3:
+        case NUM_46_EQUAL:
+        case NUM_78_MULTIPLY:
+        case NUM_89_DIVIDE:
+        case NUM_45_PLUS:
+        case NUM_56_MINUS:
+            return current_layer == 2;
+
+        default:
+            return true;
+    }
+}
+
+/*
+ * 通常判定80ms
+ * 押しにくいComboは140ms
+ */
+uint16_t get_combo_term(uint16_t index, combo_t *combo) {
+    switch (index) {
+        case QL_ESC:
+        case CV_CTRL_BSPC:
+        case DM_CTRL_DEL:
+        case MJ_DEL:
+        case TS_ESC:
+        case SH_ZKHK:
+        case EI_F10:
+        case YP_ESC:
+        case JB_F4:
+        case NUM_46_EQUAL:
+        case NUM_78_MULTIPLY:
+        case NUM_89_DIVIDE:
+        case NUM_45_PLUS:
+        case NUM_56_MINUS:
+            return 140;
+
+        default:
+            return COMBO_TERM;
+    }
+}
 
 #endif
