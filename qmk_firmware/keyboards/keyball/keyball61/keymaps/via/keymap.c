@@ -156,7 +156,7 @@ const uint16_t PROGMEM my_dj[] = {KC_D, KC_J, COMBO_END};
 const uint16_t PROGMEM my_io[] = {I_ALT, KC_O, COMBO_END};
 
 /*
- * レイヤー2の左クリック＋右クリック
+ * Remapレイヤー1の左クリック＋右クリック
  */
 const uint16_t PROGMEM btn3_combo[] = {KC_BTN1, KC_BTN2, COMBO_END};
 
@@ -171,14 +171,13 @@ const uint16_t PROGMEM my_yp[] = {KC_Y, KC_P, COMBO_END};
 const uint16_t PROGMEM my_jb[] = {KC_J, B_GUI, COMBO_END};
 
 /*
- * Keyball61のレイヤー2は通常数字 KC_4～KC_9
- * Keyball44のRemapで使用したテンキー KC_P4～KC_P9とは異なる
+ * Remapレイヤー3のNum 4～Num 9はテンキーキーコード。
  */
-const uint16_t PROGMEM my_num_46[] = {KC_4, KC_6, COMBO_END};
-const uint16_t PROGMEM my_num_78[] = {KC_7, KC_8, COMBO_END};
-const uint16_t PROGMEM my_num_89[] = {KC_8, KC_9, COMBO_END};
-const uint16_t PROGMEM my_num_45[] = {KC_4, KC_5, COMBO_END};
-const uint16_t PROGMEM my_num_56[] = {KC_5, KC_6, COMBO_END};
+const uint16_t PROGMEM my_num_46[] = {KC_P4, KC_P6, COMBO_END};
+const uint16_t PROGMEM my_num_78[] = {KC_P7, KC_P8, COMBO_END};
+const uint16_t PROGMEM my_num_89[] = {KC_P8, KC_P9, COMBO_END};
+const uint16_t PROGMEM my_num_45[] = {KC_P4, KC_P5, COMBO_END};
+const uint16_t PROGMEM my_num_56[] = {KC_P5, KC_P6, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
     [QL_ESC] = COMBO(my_ql, KC_ESC),
@@ -219,8 +218,9 @@ combo_t key_combos[COMBO_COUNT] = {
 };
 
 /*
- * Keyball61ではマウスと数字がレイヤー2にあるため、
- * マウスボタンComboと数字Comboをレイヤー2だけに限定
+ * Remap上の実際のレイヤー構成:
+ *   1 = マウス
+ *   3 = テンキー・記号
  */
 bool combo_should_trigger(
     uint16_t combo_index,
@@ -233,12 +233,14 @@ bool combo_should_trigger(
 
     switch (combo_index) {
         case BTN1_BTN2_TO_BTN3:
+            return current_layer == 1;
+
         case NUM_46_EQUAL:
         case NUM_78_MULTIPLY:
         case NUM_89_DIVIDE:
         case NUM_45_PLUS:
         case NUM_56_MINUS:
-            return current_layer == 2;
+            return current_layer == 3;
 
         default:
             return true;
