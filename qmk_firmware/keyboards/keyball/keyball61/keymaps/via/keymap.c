@@ -212,7 +212,7 @@ combo_t key_combos[COMBO_COUNT] = {
      */
     [NUM_46_EQUAL] = COMBO(my_num_46, S(KC_MINS)),
     [NUM_78_MULTIPLY] = COMBO(my_num_78, S(KC_QUOT)),
-    [NUM_89_DIVIDE] = COMBO(my_num_89, KC_SLSH),
+    [NUM_89_DIVIDE] = COMBO(my_num_89, KC_PSLS),
     [NUM_45_PLUS] = COMBO(my_num_45, S(KC_SCLN)),
     [NUM_56_MINUS] = COMBO(my_num_56, KC_MINS),
 };
