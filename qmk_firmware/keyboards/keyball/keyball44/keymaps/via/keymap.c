@@ -176,17 +176,35 @@ const uint16_t PROGMEM my_yp[] = {KC_Y, KC_P, COMBO_END};
 const uint16_t PROGMEM my_jb[] = {KC_J, B_GUI, COMBO_END};
 
 /*
- * Remap上の数字・テンキーレイヤー3限定のコンボ。
+ * Remap上のレイヤー3の数字コンボは「物理位置」で判定する。
  *
- * 画像の「Num 4～Num 9」は通常数字 KC_4～KC_9 ではなく、
- * テンキー用キーコード KC_P4～KC_P9。
+ * レイヤー3      同じ物理位置のレイヤー0
+ * Num 4          T
+ * Num 5          N
+ * Num 6          S（S_ALT Mod-Tap）
+ * Num 7          W
+ * Num 8          R
+ * Num 9          Y
+ *
+ * combo_ref_from_layer()でレイヤー3のコンボ参照先を
+ * レイヤー0へ切り替えるため、ここではレイヤー0のキーコードを使う。
  */
-const uint16_t PROGMEM my_num_46[] = {KC_P4, KC_P6, COMBO_END};
-const uint16_t PROGMEM my_num_78[] = {KC_P7, KC_P8, COMBO_END};
-const uint16_t PROGMEM my_num_89[] = {KC_P8, KC_P9, COMBO_END};
-const uint16_t PROGMEM my_num_45[] = {KC_P4, KC_P5, COMBO_END};
-const uint16_t PROGMEM my_num_56[] = {KC_P5, KC_P6, COMBO_END};
+const uint16_t PROGMEM my_num_46[] = {KC_T, S_ALT, COMBO_END};
+const uint16_t PROGMEM my_num_78[] = {KC_W, KC_R, COMBO_END};
+const uint16_t PROGMEM my_num_89[] = {KC_R, KC_Y, COMBO_END};
+const uint16_t PROGMEM my_num_45[] = {KC_T, KC_N, COMBO_END};
+const uint16_t PROGMEM my_num_56[] = {KC_N, S_ALT, COMBO_END};
 
+/*
+ * レイヤー3はコンボ判定だけレイヤー0を参照する。
+ * VIA/RemapのEEPROMに保存されたレイヤー0配置が使われる。
+ */
+uint8_t combo_ref_from_layer(uint8_t layer) {
+    if (layer == 3) {
+        return 0;
+    }
+    return layer;
+}
 
 combo_t key_combos[COMBO_COUNT] = {
     /* 元からある18コンボ */
@@ -219,7 +237,7 @@ combo_t key_combos[COMBO_COUNT] = {
 
     [NUM_46_EQUAL] = COMBO(my_num_46, S(KC_MINS)),
     [NUM_78_MULTIPLY] = COMBO(my_num_78, S(KC_QUOT)),
-    [NUM_89_DIVIDE] = COMBO(my_num_89, KC_SLSH),
+    [NUM_89_DIVIDE] = COMBO(my_num_89, KC_PSLS),
     [NUM_45_PLUS] = COMBO(my_num_45, S(KC_SCLN)),
     [NUM_56_MINUS] = COMBO(my_num_56, KC_MINS),
 };
@@ -231,12 +249,28 @@ bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode
     uint8_t current_layer = get_highest_layer(layer_state | default_layer_state);
 
     switch (combo_index) {
+        /*
+         * 数字コンボはRemapのレイヤー3だけで有効。
+         */
         case NUM_46_EQUAL:
         case NUM_78_MULTIPLY:
         case NUM_89_DIVIDE:
         case NUM_45_PLUS:
         case NUM_56_MINUS:
             return current_layer == 3;
+
+        /*
+         * 次の3つは数字コンボと同じ物理位置。
+         * レイヤー3では数字コンボを優先する。
+         *
+         * T+S = Num4+Num6
+         * W+R = Num7+Num8
+         * R+Y = Num8+Num9
+         */
+        case TS_ESC:
+        case WR_BTN4:
+        case RY_BTN5:
+            return current_layer != 3;
 
         default:
             return true;
@@ -260,11 +294,6 @@ uint16_t get_combo_term(uint16_t index, combo_t *combo) {
         case EI_F10:
         case YP_ESC:
         case JB_F4:
-        case NUM_46_EQUAL:
-        case NUM_78_MULTIPLY:
-        case NUM_89_DIVIDE:
-        case NUM_45_PLUS:
-        case NUM_56_MINUS:
             return 140;
 
         default:
