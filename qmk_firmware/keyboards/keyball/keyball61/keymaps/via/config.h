@@ -21,23 +21,20 @@ Copyright 2022 MURAOKA Taro (aka KoRoN, @kaoriya)
 #define TAP_CODE_DELAY 5
 
 /*
- * Remap上の実際のレイヤー構成:
- *   0 = 通常
- *   1 = マウス
- *   2 = Fキー
- *   3 = テンキー・記号
+ * Layers:
+ *   0 = BASE (roBa-style typing layout)
+ *   1 = AUTO_MOUSE / manual mouse layer
+ *   2 = existing Keyball61 mouse/number/F-key layer
+ *   3 = existing Keyball61 config/scroll layer
  */
 #define POINTING_DEVICE_AUTO_MOUSE_ENABLE
 #define AUTO_MOUSE_DEFAULT_LAYER 1
 #define AUTO_MOUSE_LAYER_KEEP_TIME 30000
 #define AUTO_MOUSE_THRESHOLD 30
 
-/*
- * Mod-Tapキーを含むComboとレイヤー限定Comboに必要
- */
 #define COMBO_ALLOW_ACTION_KEYS
 #define COMBO_TERM_PER_COMBO
 #define COMBO_SHOULD_TRIGGER
 
-#define COMBO_COUNT 25
+#define COMBO_COUNT 29
 #define COMBO_TERM 80
