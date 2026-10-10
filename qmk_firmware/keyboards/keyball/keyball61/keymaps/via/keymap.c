@@ -69,9 +69,9 @@ void oledkit_render_info_user(void) {
 
 #ifdef COMBO_ENABLE
 
-#define CURRENT_COMBO_COUNT 29
+#define CURRENT_COMBO_COUNT 30
 #if COMBO_COUNT != CURRENT_COMBO_COUNT
-#    error "Set COMBO_COUNT to 29 in config.h"
+#    error "Set COMBO_COUNT to 30 in config.h"
 #endif
 
 enum combos {
@@ -86,6 +86,7 @@ enum combos {
     MJ_DEL,
 
     SH_ZKHK,
+    SH_ZKHK_PLAIN_H,
     EI_F10,
     ZX_F7,
     XV_HOME,
@@ -138,6 +139,8 @@ const uint16_t PROGMEM my_cv[] = {KC_C, KC_V, COMBO_END};
 const uint16_t PROGMEM my_dm[] = {KC_D, KC_M, COMBO_END};
 const uint16_t PROGMEM my_mj[] = {KC_M, KC_J, COMBO_END};
 const uint16_t PROGMEM my_sh[] = {KC_S, H_CTL, COMBO_END};
+/* VIA EEPROMにHが通常KC_Hとして残っている場合にも対応 */
+const uint16_t PROGMEM my_sh_plain_h[] = {KC_S, KC_H, COMBO_END};
 const uint16_t PROGMEM my_ei[] = {E_CTL, I_ALT, COMBO_END};
 const uint16_t PROGMEM my_zx[] = {Z_GUI, KC_X, COMBO_END};
 const uint16_t PROGMEM my_xv[] = {KC_X, KC_V, COMBO_END};
@@ -180,6 +183,7 @@ combo_t key_combos[COMBO_COUNT] = {
     [MJ_DEL] = COMBO(my_mj, KC_DEL),
 
     [SH_ZKHK] = COMBO(my_sh, KC_GRV),
+    [SH_ZKHK_PLAIN_H] = COMBO(my_sh_plain_h, KC_GRV),
     [EI_F10] = COMBO(my_ei, KC_F10),
     [ZX_F7] = COMBO(my_zx, KC_F7),
     [XV_HOME] = COMBO(my_xv, KC_HOME),
@@ -248,6 +252,12 @@ uint16_t get_combo_term(uint16_t index, combo_t *combo) {
     if (index == BTN1_BTN2_TO_BTN3) {
         return 40;
     }
+
+    /* S+HはHがMod-Tapなので少し余裕を持たせる */
+    if (index == SH_ZKHK || index == SH_ZKHK_PLAIN_H) {
+        return 120;
+    }
+
     return COMBO_TERM;
 }
 #endif
