@@ -3,9 +3,6 @@ Copyright 2022 @Yowkees
 Copyright 2022 MURAOKA Taro (aka KoRoN, @kaoriya)
 
 roBa-style adaptation for Keyball61
-- Keep Keyball61 top number row / outer extra keys / Keyball-specific layers.
-- Make the main typing rows and mouse-button feel match roBa.
-- Keep VIA support.
 */
 #include QMK_KEYBOARD_H
 #include "quantum.h"
@@ -34,9 +31,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
     ),
 
-    /*
-     * Keyball61固有レイヤーは、元のvia設定のキー数・位置を完全維持。
-     */
     [2] = LAYOUT_universal(
         SSNP_FRE, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, SSNP_VRT,
         _______, KC_7, KC_8, KC_9, _______, _______, KC_LEFT, KC_UP, KC_RGHT, _______, KC_F12,
@@ -86,9 +80,11 @@ enum combos {
     XC_DOWN,
     IA_LEFT,
     AO_RIGHT,
+
     CV_CTRL_BSPC,
     DM_CTRL_DEL,
     MJ_DEL,
+
     SH_ZKHK,
     EI_F10,
     ZX_F7,
@@ -97,14 +93,17 @@ enum combos {
     IO_WIN_H,
     YP_ESC,
     JB_F4,
+
     BTN1_BTN2_TO_BTN3,
     WR_BTN4,
     RY_BTN5,
+
     BASE_TS_EQUAL,
     BASE_WR_MULTIPLY,
     BASE_RY_DIVIDE,
     BASE_TN_PLUS,
     BASE_NS_MINUS,
+
     NUM_46_EQUAL,
     NUM_78_MULTIPLY,
     NUM_89_DIVIDE,
@@ -112,6 +111,24 @@ enum combos {
     NUM_56_MINUS,
 };
 
+/*
+ * QMK normally checks combo keys from the currently active layer.
+ * When AUTO_MOUSE layer 1 is active, that breaks roBa-style combos because
+ * T/N become mouse keycodes and the other keys are transparent.
+ *
+ * For combo detection only, make AUTO_MOUSE layer 1 reference BASE layer 0.
+ * combo_should_trigger() still sees the real active layer, so:
+ *   - on layer 0: W+R etc. are symbols
+ *   - on layer 1: W+R etc. are mouse buttons
+ */
+uint8_t combo_ref_from_layer(uint8_t layer) {
+    if (layer == 1) {
+        return 0;
+    }
+    return layer;
+}
+
+/* roBa general combos */
 const uint16_t PROGMEM my_ql[] = {KC_Q, KC_L, COMBO_END};
 const uint16_t PROGMEM my_lu[] = {KC_L, KC_U, COMBO_END};
 const uint16_t PROGMEM my_xc[] = {KC_X, KC_C, COMBO_END};
@@ -129,17 +146,22 @@ const uint16_t PROGMEM my_io[] = {I_ALT, KC_O, COMBO_END};
 const uint16_t PROGMEM my_yp[] = {KC_Y, KC_P, COMBO_END};
 const uint16_t PROGMEM my_jb[] = {KC_J, B_GUI, COMBO_END};
 
-const uint16_t PROGMEM btn3_combo[] = {KC_BTN1, KC_BTN2, COMBO_END};
+/*
+ * Mouse combos are also defined with BASE keycodes.
+ * combo_ref_from_layer() makes them detectable while layer 1 is active.
+ */
+const uint16_t PROGMEM mouse_tn[] = {KC_T, KC_N, COMBO_END};
 const uint16_t PROGMEM mouse_wr[] = {KC_W, KC_R, COMBO_END};
 const uint16_t PROGMEM mouse_ry[] = {KC_R, KC_Y, COMBO_END};
 
+/* BASE symbol combos */
 const uint16_t PROGMEM base_ts[] = {KC_T, KC_S, COMBO_END};
 const uint16_t PROGMEM base_wr[] = {KC_W, KC_R, COMBO_END};
 const uint16_t PROGMEM base_ry[] = {KC_R, KC_Y, COMBO_END};
 const uint16_t PROGMEM base_tn[] = {KC_T, KC_N, COMBO_END};
 const uint16_t PROGMEM base_ns[] = {KC_N, KC_S, COMBO_END};
 
-/* 元のKeyball61 layer 3はテンキーコードだったので、その仕様を維持 */
+/* Keyball61 number-layer combos */
 const uint16_t PROGMEM my_num_46[] = {KC_P4, KC_P6, COMBO_END};
 const uint16_t PROGMEM my_num_78[] = {KC_P7, KC_P8, COMBO_END};
 const uint16_t PROGMEM my_num_89[] = {KC_P8, KC_P9, COMBO_END};
@@ -166,7 +188,7 @@ combo_t key_combos[COMBO_COUNT] = {
     [YP_ESC] = COMBO(my_yp, KC_ESC),
     [JB_F4] = COMBO(my_jb, KC_F4),
 
-    [BTN1_BTN2_TO_BTN3] = COMBO(btn3_combo, KC_BTN3),
+    [BTN1_BTN2_TO_BTN3] = COMBO(mouse_tn, KC_BTN3),
     [WR_BTN4] = COMBO(mouse_wr, KC_BTN4),
     [RY_BTN5] = COMBO(mouse_ry, KC_BTN5),
 
@@ -193,11 +215,13 @@ bool combo_should_trigger(
         get_highest_layer(layer_state | default_layer_state);
 
     switch (combo_index) {
+        /* Mouse-only */
         case BTN1_BTN2_TO_BTN3:
         case WR_BTN4:
         case RY_BTN5:
             return current_layer == 1;
 
+        /* BASE-only symbols */
         case BASE_TS_EQUAL:
         case BASE_WR_MULTIPLY:
         case BASE_RY_DIVIDE:
@@ -205,10 +229,7 @@ bool combo_should_trigger(
         case BASE_NS_MINUS:
             return current_layer == 0;
 
-        /*
-         * 元のKeyball61ではテンキー記号コンボはlayer 3。
-         * ここを勝手にlayer 2へ移さない。
-         */
+        /* Existing Keyball61 number-layer symbols */
         case NUM_46_EQUAL:
         case NUM_78_MULTIPLY:
         case NUM_89_DIVIDE:
@@ -216,11 +237,13 @@ bool combo_should_trigger(
         case NUM_56_MINUS:
             return current_layer == 3;
 
+        /* General roBa combos work on BASE and AUTO_MOUSE. */
         default:
-            return true;
+            return current_layer == 0 || current_layer == 1;
     }
 }
 
+/* roBa: MB3 is 40ms, all other combos 80ms. */
 uint16_t get_combo_term(uint16_t index, combo_t *combo) {
     if (index == BTN1_BTN2_TO_BTN3) {
         return 40;
