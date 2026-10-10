@@ -3,22 +3,30 @@ Copyright 2022 @Yowkees
 Copyright 2022 MURAOKA Taro (aka KoRoN, @kaoriya)
 
 roBa-style adaptation for Keyball61
+REMAP-preserving combo fix
 */
 #include QMK_KEYBOARD_H
 #include "quantum.h"
 
+/*
+ * Match the REMAP Layer 0 shown by the user:
+ * E = Ctrl-tap, I = Alt-tap,
+ * S = Alt-tap, H = Ctrl-tap,
+ * Z/B = Win/Cmd-tap.
+ */
 #define E_CTL LCTL_T(KC_E)
 #define I_ALT LALT_T(KC_I)
-#define Z_GUI LGUI_T(KC_Z)
+#define S_ALT RALT_T(KC_S)
 #define H_CTL RCTL_T(KC_H)
-#define B_GUI LGUI_T(KC_B)
+#define Z_GUI LGUI_T(KC_Z)
+#define B_GUI RGUI_T(KC_B)
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_universal(
         KC_ESC , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   , KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , KC_MINS, KC_DEL ,
         KC_Q   , KC_L   , KC_U   , KC_COMM, KC_DOT , KC_F   , KC_W   , KC_R   , KC_Y   , KC_P   , KC_INT3,
-        E_CTL  , I_ALT  , KC_A   , KC_O   , KC_MINS, KC_PSCR, KC_F15 , KC_K   , KC_T   , KC_N   , KC_S   , H_CTL,
+        E_CTL  , I_ALT  , KC_A   , KC_O   , KC_MINS, KC_PSCR, KC_F15 , KC_K   , KC_T   , KC_N   , S_ALT  , H_CTL,
         MO(1)  , Z_GUI  , KC_X   , KC_C   , KC_V   , KC_LBRC, KC_F2  , TG(1)  , KC_G   , KC_D   , KC_M   , KC_J   , B_GUI  , KC_RSFT,
         _______, KC_LCTL, KC_LALT, KC_LGUI, LT(1,KC_LNG2), LT(2,KC_SPC), LT(3,KC_LNG1), KC_BSPC, LT(2,KC_ENT), LT(1,KC_LNG2), KC_RGUI, _______, KC_RALT, KC_PSCR
     ),
@@ -50,10 +58,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // clang-format on
 
 /*
- * Make Auto Mouse available whichever half is connected by USB.
- * Both halves must run this same firmware.
+ * Keyball's keyboard_post_init_kb() loads each half's AML setting from EEPROM
+ * and only then calls keyboard_post_init_user().
+ * Force AML ON here so left-master and right-master behave the same.
  */
-void pointing_device_init_user(void) {
+void keyboard_post_init_user(void) {
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
     set_auto_mouse_layer(1);
     set_auto_mouse_enable(true);
@@ -80,9 +89,9 @@ void oledkit_render_info_user(void) {
 
 #ifdef COMBO_ENABLE
 
-#define CURRENT_COMBO_COUNT 30
+#define CURRENT_COMBO_COUNT 26
 #if COMBO_COUNT != CURRENT_COMBO_COUNT
-#    error "Set COMBO_COUNT to 30 in config.h"
+#    error "Set COMBO_COUNT to 26 in config.h"
 #endif
 
 enum combos {
@@ -97,7 +106,6 @@ enum combos {
     MJ_DEL,
 
     SH_ZKHK,
-    SH_ZKHK_PLAIN_H,
     EI_F10,
     ZX_F7,
     XV_HOME,
@@ -106,15 +114,16 @@ enum combos {
     YP_ESC,
     JB_F4,
 
-    BTN1_BTN2_TO_BTN3,
-    WR_BTN4,
-    RY_BTN5,
+    /*
+     * These three physical pairs have two meanings.
+     * Register each pair only once, then choose output in process_combo_event().
+     */
+    TN_ACTION,
+    WR_ACTION,
+    RY_ACTION,
 
-    BASE_TS_EQUAL,
-    BASE_WR_MULTIPLY,
-    BASE_RY_DIVIDE,
-    BASE_TN_PLUS,
-    BASE_NS_MINUS,
+    TS_EQUAL,
+    NS_MINUS,
 
     NUM_46_EQUAL,
     NUM_78_MULTIPLY,
@@ -124,23 +133,14 @@ enum combos {
 };
 
 /*
- * QMK normally checks combo keys from the currently active layer.
- * When AUTO_MOUSE layer 1 is active, that breaks roBa-style combos because
- * T/N become mouse keycodes and the other keys are transparent.
- *
- * For combo detection only, make AUTO_MOUSE layer 1 reference BASE layer 0.
- * combo_should_trigger() still sees the real active layer, so:
- *   - on layer 0: W+R etc. are symbols
- *   - on layer 1: W+R etc. are mouse buttons
+ * When AUTO_MOUSE layer 1 is active, detect the combo using BASE keycodes.
+ * This lets the same physical T/N, W/R and R/Y pairs work on layers 0 and 1.
  */
 uint8_t combo_ref_from_layer(uint8_t layer) {
-    if (layer == 1) {
-        return 0;
-    }
-    return layer;
+    return layer == 1 ? 0 : layer;
 }
 
-/* roBa general combos */
+/* General roBa combos. */
 const uint16_t PROGMEM my_ql[] = {KC_Q, KC_L, COMBO_END};
 const uint16_t PROGMEM my_lu[] = {KC_L, KC_U, COMBO_END};
 const uint16_t PROGMEM my_xc[] = {KC_X, KC_C, COMBO_END};
@@ -149,9 +149,10 @@ const uint16_t PROGMEM my_ao[] = {KC_A, KC_O, COMBO_END};
 const uint16_t PROGMEM my_cv[] = {KC_C, KC_V, COMBO_END};
 const uint16_t PROGMEM my_dm[] = {KC_D, KC_M, COMBO_END};
 const uint16_t PROGMEM my_mj[] = {KC_M, KC_J, COMBO_END};
-const uint16_t PROGMEM my_sh[] = {KC_S, H_CTL, COMBO_END};
-/* VIA EEPROMにHが通常KC_Hとして残っている場合にも対応 */
-const uint16_t PROGMEM my_sh_plain_h[] = {KC_S, KC_H, COMBO_END};
+
+/* IMPORTANT: S is RALT_T(KC_S) in REMAP, H is RCTL_T(KC_H). */
+const uint16_t PROGMEM my_sh[] = {S_ALT, H_CTL, COMBO_END};
+
 const uint16_t PROGMEM my_ei[] = {E_CTL, I_ALT, COMBO_END};
 const uint16_t PROGMEM my_zx[] = {Z_GUI, KC_X, COMBO_END};
 const uint16_t PROGMEM my_xv[] = {KC_X, KC_V, COMBO_END};
@@ -160,27 +161,21 @@ const uint16_t PROGMEM my_io[] = {I_ALT, KC_O, COMBO_END};
 const uint16_t PROGMEM my_yp[] = {KC_Y, KC_P, COMBO_END};
 const uint16_t PROGMEM my_jb[] = {KC_J, B_GUI, COMBO_END};
 
-/*
- * Mouse combos are also defined with BASE keycodes.
- * combo_ref_from_layer() makes them detectable while layer 1 is active.
- */
-const uint16_t PROGMEM mouse_tn[] = {KC_T, KC_N, COMBO_END};
-const uint16_t PROGMEM mouse_wr[] = {KC_W, KC_R, COMBO_END};
-const uint16_t PROGMEM mouse_ry[] = {KC_R, KC_Y, COMBO_END};
+/* Shared symbol/mouse pairs. */
+const uint16_t PROGMEM pair_tn[] = {KC_T, KC_N, COMBO_END};
+const uint16_t PROGMEM pair_wr[] = {KC_W, KC_R, COMBO_END};
+const uint16_t PROGMEM pair_ry[] = {KC_R, KC_Y, COMBO_END};
 
-/* BASE symbol combos */
-const uint16_t PROGMEM base_ts[] = {KC_T, KC_S, COMBO_END};
-const uint16_t PROGMEM base_wr[] = {KC_W, KC_R, COMBO_END};
-const uint16_t PROGMEM base_ry[] = {KC_R, KC_Y, COMBO_END};
-const uint16_t PROGMEM base_tn[] = {KC_T, KC_N, COMBO_END};
-const uint16_t PROGMEM base_ns[] = {KC_N, KC_S, COMBO_END};
+/* S is a Mod-Tap in REMAP, so use S_ALT here too. */
+const uint16_t PROGMEM pair_ts[] = {KC_T, S_ALT, COMBO_END};
+const uint16_t PROGMEM pair_ns[] = {KC_N, S_ALT, COMBO_END};
 
-/* Keyball61 number-layer combos */
-const uint16_t PROGMEM my_num_46[] = {KC_P4, KC_P6, COMBO_END};
-const uint16_t PROGMEM my_num_78[] = {KC_P7, KC_P8, COMBO_END};
-const uint16_t PROGMEM my_num_89[] = {KC_P8, KC_P9, COMBO_END};
-const uint16_t PROGMEM my_num_45[] = {KC_P4, KC_P5, COMBO_END};
-const uint16_t PROGMEM my_num_56[] = {KC_P5, KC_P6, COMBO_END};
+/* Existing number-layer combos. */
+const uint16_t PROGMEM num_46[] = {KC_P4, KC_P6, COMBO_END};
+const uint16_t PROGMEM num_78[] = {KC_P7, KC_P8, COMBO_END};
+const uint16_t PROGMEM num_89[] = {KC_P8, KC_P9, COMBO_END};
+const uint16_t PROGMEM num_45[] = {KC_P4, KC_P5, COMBO_END};
+const uint16_t PROGMEM num_56[] = {KC_P5, KC_P6, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
     [QL_ESC] = COMBO(my_ql, KC_ESC),
@@ -194,7 +189,6 @@ combo_t key_combos[COMBO_COUNT] = {
     [MJ_DEL] = COMBO(my_mj, KC_DEL),
 
     [SH_ZKHK] = COMBO(my_sh, KC_GRV),
-    [SH_ZKHK_PLAIN_H] = COMBO(my_sh_plain_h, KC_GRV),
     [EI_F10] = COMBO(my_ei, KC_F10),
     [ZX_F7] = COMBO(my_zx, KC_F7),
     [XV_HOME] = COMBO(my_xv, KC_HOME),
@@ -203,22 +197,58 @@ combo_t key_combos[COMBO_COUNT] = {
     [YP_ESC] = COMBO(my_yp, KC_ESC),
     [JB_F4] = COMBO(my_jb, KC_F4),
 
-    [BTN1_BTN2_TO_BTN3] = COMBO(mouse_tn, KC_BTN3),
-    [WR_BTN4] = COMBO(mouse_wr, KC_BTN4),
-    [RY_BTN5] = COMBO(mouse_ry, KC_BTN5),
+    [TN_ACTION] = COMBO_ACTION(pair_tn),
+    [WR_ACTION] = COMBO_ACTION(pair_wr),
+    [RY_ACTION] = COMBO_ACTION(pair_ry),
 
-    [BASE_TS_EQUAL] = COMBO(base_ts, S(KC_MINS)),
-    [BASE_WR_MULTIPLY] = COMBO(base_wr, S(KC_QUOT)),
-    [BASE_RY_DIVIDE] = COMBO(base_ry, KC_PSLS),
-    [BASE_TN_PLUS] = COMBO(base_tn, S(KC_SCLN)),
-    [BASE_NS_MINUS] = COMBO(base_ns, KC_MINS),
+    [TS_EQUAL] = COMBO(pair_ts, S(KC_MINS)),
+    [NS_MINUS] = COMBO(pair_ns, KC_MINS),
 
-    [NUM_46_EQUAL] = COMBO(my_num_46, S(KC_MINS)),
-    [NUM_78_MULTIPLY] = COMBO(my_num_78, S(KC_QUOT)),
-    [NUM_89_DIVIDE] = COMBO(my_num_89, KC_PSLS),
-    [NUM_45_PLUS] = COMBO(my_num_45, S(KC_SCLN)),
-    [NUM_56_MINUS] = COMBO(my_num_56, KC_MINS),
+    [NUM_46_EQUAL] = COMBO(num_46, S(KC_MINS)),
+    [NUM_78_MULTIPLY] = COMBO(num_78, S(KC_QUOT)),
+    [NUM_89_DIVIDE] = COMBO(num_89, KC_PSLS),
+    [NUM_45_PLUS] = COMBO(num_45, S(KC_SCLN)),
+    [NUM_56_MINUS] = COMBO(num_56, KC_MINS),
 };
+
+/*
+ * Do not define the same W+R / R+Y / T+N pair twice.
+ * Choose the output after the combo is recognized.
+ */
+void process_combo_event(uint16_t combo_index, bool pressed) {
+    if (!pressed) {
+        return;
+    }
+
+    uint8_t current_layer =
+        get_highest_layer(layer_state | default_layer_state);
+
+    switch (combo_index) {
+        case TN_ACTION:
+            if (current_layer == 1) {
+                tap_code(KC_BTN3);
+            } else {
+                tap_code(KC_PPLS);
+            }
+            break;
+
+        case WR_ACTION:
+            if (current_layer == 1) {
+                tap_code(KC_BTN4);
+            } else {
+                tap_code(KC_PAST);
+            }
+            break;
+
+        case RY_ACTION:
+            if (current_layer == 1) {
+                tap_code(KC_BTN5);
+            } else {
+                tap_code(KC_PSLS);
+            }
+            break;
+    }
+}
 
 bool combo_should_trigger(
     uint16_t combo_index,
@@ -230,27 +260,6 @@ bool combo_should_trigger(
         get_highest_layer(layer_state | default_layer_state);
 
     switch (combo_index) {
-        /* Mouse-only */
-        case BTN1_BTN2_TO_BTN3:
-        case WR_BTN4:
-        case RY_BTN5:
-            return current_layer == 1;
-
-        /*
-         * These two do not collide with mouse-button combos, so keep them
-         * usable even while AUTO_MOUSE layer 1 is active.
-         */
-        case BASE_TS_EQUAL:
-        case BASE_NS_MINUS:
-            return current_layer == 0 || current_layer == 1;
-
-        /* These pairs are mouse buttons on AUTO_MOUSE layer 1. */
-        case BASE_WR_MULTIPLY:
-        case BASE_RY_DIVIDE:
-        case BASE_TN_PLUS:
-            return current_layer == 0;
-
-        /* Existing Keyball61 number-layer symbols */
         case NUM_46_EQUAL:
         case NUM_78_MULTIPLY:
         case NUM_89_DIVIDE:
@@ -258,20 +267,25 @@ bool combo_should_trigger(
         case NUM_56_MINUS:
             return current_layer == 3;
 
-        /* General roBa combos work on BASE and AUTO_MOUSE. */
+        /*
+         * roBa typing and mouse combos work from BASE and AUTO_MOUSE.
+         * TN/WR/RY decide their actual output in process_combo_event().
+         */
         default:
             return current_layer == 0 || current_layer == 1;
     }
 }
 
-/* roBa: MB3 is 40ms, all other combos 80ms. */
 uint16_t get_combo_term(uint16_t index, combo_t *combo) {
-    if (index == BTN1_BTN2_TO_BTN3) {
+    if (index == TN_ACTION) {
         return 40;
     }
 
-    /* S+HはHがMod-Tapなので少し余裕を持たせる */
-    if (index == SH_ZKHK || index == SH_ZKHK_PLAIN_H) {
+    /*
+     * S and H are both Mod-Taps in the REMAP layout.
+     * Give S+H / T+S / N+S a little more room.
+     */
+    if (index == SH_ZKHK || index == TS_EQUAL || index == NS_MINUS) {
         return 120;
     }
 
