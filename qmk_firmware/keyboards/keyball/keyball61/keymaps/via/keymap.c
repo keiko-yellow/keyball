@@ -19,10 +19,7 @@ REMAP-preserving combo fix
 #define S_ALT RALT_T(KC_S)
 #define H_CTL RCTL_T(KC_H)
 #define Z_GUI LGUI_T(KC_Z)
-
-enum custom_keycodes {
-    B_GUI_CUSTOM = SAFE_RANGE,
-};
+#define B_GUI RGUI_T(KC_B)
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -30,7 +27,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_ESC , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   , KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , KC_MINS, KC_DEL ,
         KC_Q   , KC_L   , KC_U   , KC_COMM, KC_DOT , KC_F   , KC_W   , KC_R   , KC_Y   , KC_P   , KC_INT3,
         E_CTL  , I_ALT  , KC_A   , KC_O   , KC_MINS, KC_PSCR, KC_F15 , KC_K   , KC_T   , KC_N   , S_ALT  , H_CTL,
-        MO(1)  , Z_GUI  , KC_X   , KC_C   , KC_V   , KC_LBRC, KC_F2  , TG(1)  , KC_G   , KC_D   , KC_M   , KC_J   , B_GUI_CUSTOM, KC_RSFT,
+        MO(1)  , Z_GUI  , KC_X   , KC_C   , KC_V   , KC_LBRC, KC_F2  , TG(1)  , KC_G   , KC_D   , KC_M   , KC_J   , B_GUI  , KC_RSFT,
         _______, KC_LCTL, KC_LALT, KC_LGUI, LT(1,KC_LNG2), LT(2,KC_SPC), LT(3,KC_LNG1), KC_BSPC, LT(2,KC_ENT), LT(1,KC_LNG2), KC_RGUI, _______, KC_RALT, KC_PSCR
     ),
     [1] = LAYOUT_universal(
@@ -82,64 +79,10 @@ void oledkit_render_info_user(void) {
 }
 #endif
 
-
-/*
- * B dedicated dual-role handling:
- * - quick tap: B
- * - hold B, then press another key: Right GUI (Win/Cmd) modifier
- * - quick J+B is handled by the combo engine as F4
- *
- * This avoids the Mod-Tap + combo conflict that caused B taps to disappear.
- */
-static bool b_custom_down = false;
-static bool b_custom_gui_active = false;
-static bool b_custom_combo_consumed = false;
-static uint16_t b_custom_timer = 0;
-
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    if (keycode == B_GUI_CUSTOM) {
-        if (record->event.pressed) {
-            b_custom_down = true;
-            b_custom_gui_active = false;
-            b_custom_combo_consumed = false;
-            b_custom_timer = timer_read();
-        } else {
-            if (b_custom_combo_consumed) {
-                b_custom_combo_consumed = false;
-                b_custom_down = false;
-                return false;
-            }
-
-            if (b_custom_gui_active) {
-                unregister_code(KC_RGUI);
-            } else if (timer_elapsed(b_custom_timer) < TAPPING_TERM) {
-                tap_code(KC_B);
-            }
-
-            b_custom_down = false;
-            b_custom_gui_active = false;
-        }
-        return false;
-    }
-
-    /*
-     * Once another normal key is pressed while B is held,
-     * turn B into Right GUI before that key is processed.
-     */
-    if (b_custom_down && record->event.pressed && !b_custom_combo_consumed) {
-        if (!b_custom_gui_active) {
-            register_code(KC_RGUI);
-            b_custom_gui_active = true;
-        }
-    }
-
-    return true;
-}
-
 #ifdef COMBO_ENABLE
-#define CURRENT_COMBO_COUNT 26
+#define CURRENT_COMBO_COUNT 25
 #if COMBO_COUNT != CURRENT_COMBO_COUNT
-#    error "Set COMBO_COUNT to 26 in config.h"
+#    error "Set COMBO_COUNT to 25 in config.h"
 #endif
 
 enum combos {
@@ -160,8 +103,6 @@ enum combos {
     DJ_END,
     IO_WIN_H,
     YP_ESC,
-    JB_F4,
-
     TN_ACTION,
     WR_ACTION,
     RY_ACTION,
@@ -197,8 +138,6 @@ const uint16_t PROGMEM my_io[] = {I_ALT, KC_O, COMBO_END};
 const uint16_t PROGMEM my_yp[] = {KC_Y, KC_P, COMBO_END};
 
 /* B is tap=B / hold=Right GUI. Keep the combo on the exact Mod-Tap keycode. */
-const uint16_t PROGMEM my_jb[] = {KC_J, B_GUI_CUSTOM, COMBO_END};
-
 const uint16_t PROGMEM pair_tn[] = {KC_T, KC_N, COMBO_END};
 const uint16_t PROGMEM pair_wr[] = {KC_W, KC_R, COMBO_END};
 const uint16_t PROGMEM pair_ry[] = {KC_R, KC_Y, COMBO_END};
@@ -228,8 +167,6 @@ combo_t key_combos[COMBO_COUNT] = {
     [DJ_END] = COMBO(my_dj, KC_END),
     [IO_WIN_H] = COMBO(my_io, LGUI(KC_H)),
     [YP_ESC] = COMBO(my_yp, KC_ESC),
-    [JB_F4] = COMBO_ACTION(my_jb),
-
     [TN_ACTION] = COMBO_ACTION(pair_tn),
     [WR_ACTION] = COMBO_ACTION(pair_wr),
     [RY_ACTION] = COMBO_ACTION(pair_ry),
@@ -245,21 +182,6 @@ combo_t key_combos[COMBO_COUNT] = {
 
 void process_combo_event(uint16_t combo_index, bool pressed) {
     if (!pressed) {
-        return;
-    }
-
-    /*
-     * J+B is intentionally a combo action so it can cancel B's custom
-     * dual-role state cleanly instead of leaving GUI stuck.
-     */
-    if (combo_index == JB_F4) {
-        if (b_custom_gui_active) {
-            unregister_code(KC_RGUI);
-            b_custom_gui_active = false;
-        }
-        b_custom_combo_consumed = true;
-        b_custom_down = false;
-        tap_code(KC_F4);
         return;
     }
 

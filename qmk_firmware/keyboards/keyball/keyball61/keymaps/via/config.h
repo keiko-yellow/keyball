@@ -20,5 +20,5 @@ Copyright 2022 MURAOKA Taro (aka KoRoN, @kaoriya)
 #define COMBO_TERM_PER_COMBO
 #define COMBO_SHOULD_TRIGGER
 
-#define COMBO_COUNT 26
+#define COMBO_COUNT 25
 #define COMBO_TERM 80
