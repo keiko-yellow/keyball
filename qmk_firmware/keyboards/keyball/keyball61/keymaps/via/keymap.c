@@ -12,25 +12,22 @@ REMAP-preserving combo fix
  * Match the REMAP Layer 0 shown by the user:
  * E = Ctrl-tap, I = Alt-tap,
  * S = Alt-tap, H = Ctrl-tap,
- * Z/B = Win/Cmd-tap.
+ * Z = Win/Cmd-tap. B = normal KC_B.
  */
 #define E_CTL LCTL_T(KC_E)
 #define I_ALT LALT_T(KC_I)
 #define S_ALT RALT_T(KC_S)
 #define H_CTL RCTL_T(KC_H)
 #define Z_GUI LGUI_T(KC_Z)
-#define B_GUI RGUI_T(KC_B)
-
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_universal(
         KC_ESC , KC_1   , KC_2   , KC_3   , KC_4   , KC_5   , KC_6   , KC_7   , KC_8   , KC_9   , KC_0   , KC_MINS, KC_DEL ,
         KC_Q   , KC_L   , KC_U   , KC_COMM, KC_DOT , KC_F   , KC_W   , KC_R   , KC_Y   , KC_P   , KC_INT3,
         E_CTL  , I_ALT  , KC_A   , KC_O   , KC_MINS, KC_PSCR, KC_F15 , KC_K   , KC_T   , KC_N   , S_ALT  , H_CTL,
-        MO(1)  , Z_GUI  , KC_X   , KC_C   , KC_V   , KC_LBRC, KC_F2  , TG(1)  , KC_G   , KC_D   , KC_M   , KC_J   , B_GUI  , KC_RSFT,
+        MO(1)  , Z_GUI  , KC_X   , KC_C   , KC_V   , KC_LBRC, KC_F2  , TG(1)  , KC_G   , KC_D   , KC_M   , KC_J   , KC_B   , KC_RSFT,
         _______, KC_LCTL, KC_LALT, KC_LGUI, LT(1,KC_LNG2), LT(2,KC_SPC), LT(3,KC_LNG1), KC_BSPC, LT(2,KC_ENT), LT(1,KC_LNG2), KC_RGUI, _______, KC_RALT, KC_PSCR
     ),
-
     [1] = LAYOUT_universal(
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
@@ -38,7 +35,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
     ),
-
     [2] = LAYOUT_universal(
         SSNP_FRE, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, SSNP_VRT,
         _______, KC_7, KC_8, KC_9, _______, _______, KC_LEFT, KC_UP, KC_RGHT, _______, KC_F12,
@@ -46,7 +42,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, KC_1, KC_2, KC_3, S(KC_MINS), S(KC_8), S(KC_9), KC_PGDN, _______, _______, _______, _______, _______, _______,
         _______, KC_0, KC_DOT, _______, _______, _______, KC_DEL, _______, _______, _______, _______, _______, _______
     ),
-
     [3] = LAYOUT_universal(
         RGB_TOG, AML_TO, AML_I50, AML_D50, _______, _______, RGB_M_P, RGB_M_B, RGB_M_R, RGB_M_SW, RGB_M_SN, RGB_M_K, RGB_MOD,
         RGB_HUI, RGB_SAI, RGB_VAI, _______, _______, RGB_M_X, RGB_M_G, RGB_M_T, RGB_M_TW, _______, _______, RGB_RMOD,
@@ -56,7 +51,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 };
 // clang-format on
-
 /*
  * Keyball's keyboard_post_init_kb() loads each half's AML setting from EEPROM
  * and only then calls keyboard_post_init_user().
@@ -68,7 +62,6 @@ void keyboard_post_init_user(void) {
     set_auto_mouse_enable(true);
 #endif
 }
-
 layer_state_t layer_state_set_user(layer_state_t state) {
     keyball_set_scroll_mode(get_highest_layer(state) == 3);
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
@@ -76,7 +69,6 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 #endif
     return state;
 }
-
 #ifdef OLED_ENABLE
 #    include "lib/oledkit/oledkit.h"
 
@@ -88,7 +80,6 @@ void oledkit_render_info_user(void) {
 #endif
 
 #ifdef COMBO_ENABLE
-
 #define CURRENT_COMBO_COUNT 26
 #if COMBO_COUNT != CURRENT_COMBO_COUNT
 #    error "Set COMBO_COUNT to 26 in config.h"
@@ -113,7 +104,6 @@ enum combos {
     IO_WIN_H,
     YP_ESC,
     JB_F4,
-
     /*
      * These three physical pairs have two meanings.
      * Register each pair only once, then choose output in process_combo_event().
@@ -131,7 +121,6 @@ enum combos {
     NUM_45_PLUS,
     NUM_56_MINUS,
 };
-
 /*
  * When AUTO_MOUSE layer 1 is active, detect the combo using BASE keycodes.
  * This lets the same physical T/N, W/R and R/Y pairs work on layers 0 and 1.
@@ -139,7 +128,6 @@ enum combos {
 uint8_t combo_ref_from_layer(uint8_t layer) {
     return layer == 1 ? 0 : layer;
 }
-
 /* General roBa combos. */
 const uint16_t PROGMEM my_ql[] = {KC_Q, KC_L, COMBO_END};
 const uint16_t PROGMEM my_lu[] = {KC_L, KC_U, COMBO_END};
@@ -149,18 +137,15 @@ const uint16_t PROGMEM my_ao[] = {KC_A, KC_O, COMBO_END};
 const uint16_t PROGMEM my_cv[] = {KC_C, KC_V, COMBO_END};
 const uint16_t PROGMEM my_dm[] = {KC_D, KC_M, COMBO_END};
 const uint16_t PROGMEM my_mj[] = {KC_M, KC_J, COMBO_END};
-
 /* IMPORTANT: S is RALT_T(KC_S) in REMAP, H is RCTL_T(KC_H). */
 const uint16_t PROGMEM my_sh[] = {S_ALT, H_CTL, COMBO_END};
-
 const uint16_t PROGMEM my_ei[] = {E_CTL, I_ALT, COMBO_END};
 const uint16_t PROGMEM my_zx[] = {Z_GUI, KC_X, COMBO_END};
 const uint16_t PROGMEM my_xv[] = {KC_X, KC_V, COMBO_END};
 const uint16_t PROGMEM my_dj[] = {KC_D, KC_J, COMBO_END};
 const uint16_t PROGMEM my_io[] = {I_ALT, KC_O, COMBO_END};
 const uint16_t PROGMEM my_yp[] = {KC_Y, KC_P, COMBO_END};
-const uint16_t PROGMEM my_jb[] = {KC_J, B_GUI, COMBO_END};
-
+const uint16_t PROGMEM my_jb[] = {KC_J, KC_B, COMBO_END};
 /* Shared symbol/mouse pairs. */
 const uint16_t PROGMEM pair_tn[] = {KC_T, KC_N, COMBO_END};
 const uint16_t PROGMEM pair_wr[] = {KC_W, KC_R, COMBO_END};
@@ -169,14 +154,12 @@ const uint16_t PROGMEM pair_ry[] = {KC_R, KC_Y, COMBO_END};
 /* S is a Mod-Tap in REMAP, so use S_ALT here too. */
 const uint16_t PROGMEM pair_ts[] = {KC_T, S_ALT, COMBO_END};
 const uint16_t PROGMEM pair_ns[] = {KC_N, S_ALT, COMBO_END};
-
 /* Existing number-layer combos. */
 const uint16_t PROGMEM num_46[] = {KC_P4, KC_P6, COMBO_END};
 const uint16_t PROGMEM num_78[] = {KC_P7, KC_P8, COMBO_END};
 const uint16_t PROGMEM num_89[] = {KC_P8, KC_P9, COMBO_END};
 const uint16_t PROGMEM num_45[] = {KC_P4, KC_P5, COMBO_END};
 const uint16_t PROGMEM num_56[] = {KC_P5, KC_P6, COMBO_END};
-
 combo_t key_combos[COMBO_COUNT] = {
     [QL_ESC] = COMBO(my_ql, KC_ESC),
     [LU_UP] = COMBO(my_lu, KC_UP),
@@ -187,7 +170,6 @@ combo_t key_combos[COMBO_COUNT] = {
     [CV_CTRL_BSPC] = COMBO(my_cv, LCTL(KC_BSPC)),
     [DM_CTRL_DEL] = COMBO(my_dm, LCTL(KC_DEL)),
     [MJ_DEL] = COMBO(my_mj, KC_DEL),
-
     [SH_ZKHK] = COMBO(my_sh, KC_GRV),
     [EI_F10] = COMBO(my_ei, KC_F10),
     [ZX_F7] = COMBO(my_zx, KC_F7),
@@ -200,7 +182,6 @@ combo_t key_combos[COMBO_COUNT] = {
     [TN_ACTION] = COMBO_ACTION(pair_tn),
     [WR_ACTION] = COMBO_ACTION(pair_wr),
     [RY_ACTION] = COMBO_ACTION(pair_ry),
-
     [TS_EQUAL] = COMBO(pair_ts, S(KC_MINS)),
     [NS_MINUS] = COMBO(pair_ns, KC_MINS),
 
@@ -210,7 +191,6 @@ combo_t key_combos[COMBO_COUNT] = {
     [NUM_45_PLUS] = COMBO(num_45, S(KC_SCLN)),
     [NUM_56_MINUS] = COMBO(num_56, KC_MINS),
 };
-
 /*
  * Do not define the same W+R / R+Y / T+N pair twice.
  * Choose the output after the combo is recognized.
@@ -222,7 +202,6 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
 
     uint8_t current_layer =
         get_highest_layer(layer_state | default_layer_state);
-
     switch (combo_index) {
         case TN_ACTION:
             if (current_layer == 1) {
@@ -239,7 +218,6 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
                 tap_code(KC_PAST);
             }
             break;
-
         case RY_ACTION:
             if (current_layer == 1) {
                 tap_code(KC_BTN5);
@@ -258,7 +236,6 @@ bool combo_should_trigger(
 ) {
     uint8_t current_layer =
         get_highest_layer(layer_state | default_layer_state);
-
     switch (combo_index) {
         case NUM_46_EQUAL:
         case NUM_78_MULTIPLY:
@@ -275,7 +252,6 @@ bool combo_should_trigger(
             return current_layer == 0 || current_layer == 1;
     }
 }
-
 uint16_t get_combo_term(uint16_t index, combo_t *combo) {
     if (index == TN_ACTION) {
         return 40;
