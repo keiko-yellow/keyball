@@ -180,23 +180,38 @@ combo_t key_combos[COMBO_COUNT] = {
     [NUM_56_MINUS] = COMBO(num_56, KC_MINS),
 };
 
+static bool tn_mb3_active = false;
+
 void process_combo_event(uint16_t combo_index, bool pressed) {
+    uint8_t current_layer =
+        get_highest_layer(layer_state | default_layer_state);
+
+    /*
+     * roBa-style pan:
+     * On auto-mouse layer, hold T+N to hold MB3.
+     * Release T or N to release MB3.
+     * The flag guarantees MB3 is released even if layer 1 drops meanwhile.
+     */
+    if (combo_index == TN_ACTION) {
+        if (pressed) {
+            if (current_layer == 1) {
+                register_code(KC_BTN3);
+                tn_mb3_active = true;
+            } else {
+                tap_code(KC_PPLS);
+            }
+        } else if (tn_mb3_active) {
+            unregister_code(KC_BTN3);
+            tn_mb3_active = false;
+        }
+        return;
+    }
+
     if (!pressed) {
         return;
     }
 
-    uint8_t current_layer =
-        get_highest_layer(layer_state | default_layer_state);
-
     switch (combo_index) {
-        case TN_ACTION:
-            if (current_layer == 1) {
-                tap_code(KC_BTN3);
-            } else {
-                tap_code(KC_PPLS);
-            }
-            break;
-
         case WR_ACTION:
             if (current_layer == 1) {
                 tap_code(KC_BTN4);
